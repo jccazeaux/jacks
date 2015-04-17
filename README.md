@@ -23,7 +23,6 @@ jacks.plugin(function(jacksRequest) {
 ## Request specific plugin
 ```javascript
 function notVader(jacksRequest) {
-	// All request must have this query parameter
 	jacksRequest.query("iAmNot", "Vader");
 }
 
