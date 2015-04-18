@@ -70,7 +70,7 @@ var jacks = (function() {
 		if (parsers[contentType]){
 			this.response = parsers[contentType](xhr.responseText);
 		} else {
-			xhr.response = responseText;
+			xhr.response = xhr.responseText;
 		}
 		this.headers = xhr.getAllResponseHeaders();
 	}
@@ -156,9 +156,14 @@ var jacks = (function() {
 			query = query || {};
 			if (typeof name === "string") {
 				query[name] = value;
+				var queryTemp = {};
+				queryTemp[name] = value;
+				url = processUrl(url, queryTemp);
 			} else if (typeof name === "object") {
 				for (var attr in name) {
 					query[name[attr]] = name[value];
+					processUrl(url, name);
+
 				}
 			}
 			return this;
@@ -179,7 +184,6 @@ var jacks = (function() {
 		 * @param {Function} error
 		 */
 		this.send = function(callback, error) {
-			var actualUrl = processUrl(url);
 			var xhr = getXHR();
 	  		// state change
 			xhr.onreadystatechange = function(){
@@ -190,7 +194,7 @@ var jacks = (function() {
 			xhr.onerror = function(e) {
 				error(e);
 			}
-			xhr.open(requestType, actualUrl);
+			xhr.open(requestType, url);
 			for (var header in headers) {
 				xhr.setRequestHeader(header, headers[header]);
 			}

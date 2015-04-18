@@ -15,3 +15,9 @@ jacks.get("http://localhost")
 	alert(JSON.stringify(res));
 });
 ```
+
+# Plugin Jacks-cache
+This plugin loads the GET request and then puts the response in a cache. The key is the URL. The cache is very basic for now, it's more like a lazy loading as it does not handle any time to live for the elements.
+
+## Dependencies
+None

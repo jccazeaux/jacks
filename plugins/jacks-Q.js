@@ -1,4 +1,4 @@
-jacksQ.plugin(function(request) {
+var jacksQ =function(request) {
 	var oldSend = request.send;
 	request.send = function() {
 		var defer = Q.defer();
@@ -10,4 +10,4 @@ jacksQ.plugin(function(request) {
 		})
 		return defer.promise;
 	}
-});
+};
