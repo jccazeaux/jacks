@@ -10,6 +10,7 @@ You must include Q in your application
 
 ```Javascript
 jacks.get("http://localhost")
+.use("Q")
 .send()
 .then(function(res) {
 	alert(JSON.stringify(res));
@@ -21,3 +22,14 @@ This plugin loads the GET request and then puts the response in a cache. The key
 
 ## Dependencies
 None
+
+## Exemple
+
+```Javascript
+jacks.get("http://localhost")
+.use("cache")
+.send()
+.then(function(res) {
+	alert(JSON.stringify(res));
+});
+```
