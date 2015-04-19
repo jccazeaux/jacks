@@ -1,19 +1,9 @@
 var jacks = (function() {
-	var plugins = [];
+	var plugins = {};
+	var globalUses = [];
 	var exports = {};
-	var serializers = {
-		"application/json": function(data) {
-			return JSON.stringify(data);
-		},
-		"application/x-www-form-urlencoded": function(data) {
-
-		}
-	};
-	var parsers = {
-		"application/json": function(data) {
-			return JSON.parse(data);
-		}
-	};
+	var serializers = require("./serializers");
+	var parsers = require("./parsers");
 
 
 	function getXHR() {
@@ -92,6 +82,14 @@ var jacks = (function() {
 		 * @todo : keep this or rely on content-type header ? 
 		 */
 		var type = "application/json";
+		/**
+		 * request type
+		 */
+		this.requestType = requestType;
+		/**
+		 * url
+		 */
+		this.url = url;
 		var that = this;
 
 		/**
@@ -158,12 +156,11 @@ var jacks = (function() {
 				query[name] = value;
 				var queryTemp = {};
 				queryTemp[name] = value;
-				url = processUrl(url, queryTemp);
+				this.url = processUrl(this.url, queryTemp);
 			} else if (typeof name === "object") {
 				for (var attr in name) {
-					query[name[attr]] = name[value];
-					processUrl(url, name);
-
+					query[attr] = name[attr];
+					this.url = processUrl(this.url, name);
 				}
 			}
 			return this;
@@ -173,8 +170,15 @@ var jacks = (function() {
 		 * executes a plugin
 		 * @param {Function} pluginFn
 		 */
-		this.plugin = function(pluginFn) {
-			pluginFn.call(this, this);
+		this.use = function(pluginNameOrFn) {
+			if (typeof pluginNameOrFn == "string") {
+				if (plugins[pluginNameOrFn] == null) {
+					throw "Plugin " + globalUses[i] + " not found";
+				}
+				plugins[pluginNameOrFn](this);
+			} else if (typeof pluginNameOrFn === "function") {
+				pluginNameOrFn(this);
+			}
 			return this;
 		}
 
@@ -194,7 +198,7 @@ var jacks = (function() {
 			xhr.onerror = function(e) {
 				error(e);
 			}
-			xhr.open(requestType, url);
+			xhr.open(requestType, this.url);
 			for (var header in headers) {
 				xhr.setRequestHeader(header, headers[header]);
 			}
@@ -202,8 +206,8 @@ var jacks = (function() {
 		}
 
 		// Exec plugins
-		for (var i = 0 ; i < plugins.length ; i++) {
-			plugins[i](this);
+		for (var i = 0 ; i < globalUses.length ; i++) {
+			this.use(globalUses[i]);
 		}
 	}
 
@@ -219,8 +223,12 @@ var jacks = (function() {
 	exports["delete"] = function(url) {
 		return new JacksRequest("DELETE", url);
 	}
-	exports.plugin = function(pluginObject) {
-		plugins.push(pluginObject);
+	exports.plugin = function(name, pluginObject) {
+		plugins[name] = pluginObject;
+		return this;
+	}
+	exports.use = function(pluginNameOrFn) {
+		globalUses.push(pluginNameOrFn);
 		return this;
 	}
 	exports.parser = function(type, parserFn) {
@@ -231,9 +239,7 @@ var jacks = (function() {
 		serializers[type] = serializerFn;
 		return this;
 	}
-	exports.plugin = function(pluginObject) {
-		plugins.push(pluginObject);
-		return this;
-	}
 	return exports;
 })();
+
+window.jacks = jacks;
