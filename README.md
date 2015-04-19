@@ -83,12 +83,3 @@ function notVader(jacksRequest) {
 	jacksRequest.query("iAmNot", "Vader");
 }
 
-jacks
-.get("http://localhost/")
-.plugin(notVader);
-.query("param1", "value1")
-.query("param2", "value2")
-.send(function(res) {
-	alert(res);
-});
-```
