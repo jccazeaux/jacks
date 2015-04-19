@@ -57,7 +57,7 @@ jacks.get("http://myrurl")
 .use(function(jacksRequest) {
 	// plugin code
 })
-
+```
 
 # Exemples
 ```javascript
@@ -69,15 +69,4 @@ jacks
 	alert(res);
 });
 ```
-
-## Global plugin
-```javascript
-jacks.plugin(function(jacksRequest) {
-});
-```
-
-## Request specific plugin
-```javascript
-function notVader(jacksRequest) {
-}
 
