@@ -22,14 +22,41 @@ jacks.delete(url) : creates a DELETE request with the url
 #### plugin()
 
 
-## Global plugin
-You can add a plugin to all requests with the plugin method on jacks
+## Define a plugin
+You can add a plugin to jacks using the plugin() function on jacks (not on request)
 ```javascript
-jacks.plugin(function(jacksRequest) {
+jacks.plugin("pluginName", function(jacksRequest) {
 	// Access to all request methods
 });
 ```
 A plugin is a function wich receives the request as parameter.
+
+## Use a plugin
+To use au plugin, simplye call it with use() function
+```javascript
+// Global use, will impact all jacks requests
+jacks.use("pluginName");
+// Request specific
+jacks.get("http://myrurl")
+.use("pluginName")
+```
+
+### Anonymous plugin
+Jacks accepts anonymous plugins. An anonymous plugin is a plugin that will not be defined using the plugin() function.
+
+Call anonymous plugins with use() function by passing a function :
+
+```javascript
+// Global anonymous plugin
+jacks.use(function(jacksRequest) {
+	// Plugin code
+});
+// Request specific anonymous plugin
+jacks.get("http://myrurl")
+.use(function(jacksRequest) {
+	// Plugin code
+})
+
 
 # Exemples
 ```javascript
