@@ -49,12 +49,13 @@ Call anonymous plugins with use() function by passing a function :
 ```javascript
 // Global anonymous plugin
 jacks.use(function(jacksRequest) {
-	// Plugin code
+	// All request must have this query parameter
+	jacksRequest.query("iAm", "Yoda");
 });
 // Request specific anonymous plugin
 jacks.get("http://myrurl")
 .use(function(jacksRequest) {
-	// Plugin code
+	// plugin code
 })
 
 
@@ -72,14 +73,11 @@ jacks
 ## Global plugin
 ```javascript
 jacks.plugin(function(jacksRequest) {
-	// All request must have this query parameter
-	jacksRequest.query("iAm", "Yoda");
 });
 ```
 
 ## Request specific plugin
 ```javascript
 function notVader(jacksRequest) {
-	jacksRequest.query("iAmNot", "Vader");
 }
 
