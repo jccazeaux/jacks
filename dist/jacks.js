@@ -19,16 +19,16 @@ var jacks = (function() {
 	  return false;
 	};
 	/**
-	 * Serialize data with chosen type
-	 * @param {Object} data
+	 * Serialize body with chosen type
+	 * @param {Object} body
 	 * @return String
 	 */
-	function serialize(data, type) {
+	function serialize(body, type) {
 		var serializer = serializers[type];
 		if (serializer == null) {
 			throw "No serializer found for type " + type; 
 		}
-		return serializer(data);
+		return serializer(body);
 	}
 
 	/**
@@ -46,7 +46,7 @@ var jacks = (function() {
 		}
 		if (query != null) {
 			for (param in query) {
-				actualUrl += token + param + "=" + query[param];
+				actualUrl += token + param + "=" + encodeURIComponent(query[param]);
 				token = "&";
 			}
 		}
@@ -75,14 +75,10 @@ var jacks = (function() {
 	function JacksRequest(requestType, url) {
 		/** Request headers */
 		var headers = {};
-		/** Data, only for post/put */
-		var data = null;
+		/** Body, only for post/put */
+		var body = null;
 		/** Query parameters, to append on url */
 		var query = null;
-		/** Data type
-		 * @todo : keep this or rely on content-type header ? 
-		 */
-		var type = "application/json";
 		/**
 		 * request type
 		 */
@@ -108,37 +104,16 @@ var jacks = (function() {
 		};
 
 		/**
-		 * Sets the type
-		 * if type is null, gets the type
-		 * @param {String} value
-		 * @returns this or the type if first param is undefined
+		 * Add one or more body. To add one, send param and value. To add more, send an key/value object.
+		 * @param name - name of the body or key/value object
+		 * @param value - value of the body. Ignored if name is an object
+		 * @returns this or the body if first param is undefined
 		 */
-		this.type = function(value) {
-			if (value === undefined) {
-				return type;
-			}
-			type = value;
-			return this;
-		};
-
-		/**
-		 * Add one or more data. To add one, send param and value. To add more, send an key/value object.
-		 * @param name - name of the data or key/value object
-		 * @param value - value of the data. Ignored if name is an object
-		 * @returns this or the data if first param is undefined
-		 */
-		this.data = function(name, value) {
+		this.body = function(value) {
 			if (name === undefined) {
-				return data;
+				return body;
 			}
-			data = data || {};
-			if (typeof name === "string") {
-				data[name] = value;
-			} else if (typeof name === "object") {
-				for (var attr in name) {
-					data[name[attr]] = name[value];
-				}
-			}
+			body = value;
 			return this;
 		};
 
@@ -157,11 +132,11 @@ var jacks = (function() {
 				query[name] = value;
 				var queryTemp = {};
 				queryTemp[name] = value;
-				this.url = processUrl(this.url, queryTemp);
+				that.url = processUrl(that.url, queryTemp);
 			} else if (typeof name === "object") {
 				for (var attr in name) {
 					query[attr] = name[attr];
-					this.url = processUrl(this.url, name);
+					that.url = processUrl(that.url, name);
 				}
 			}
 			return this;
@@ -199,11 +174,19 @@ var jacks = (function() {
 			xhr.onerror = function(e) {
 				error(e);
 			}
-			xhr.open(requestType, this.url);
+			xhr.open(requestType, that.url);
 			for (var header in headers) {
 				xhr.setRequestHeader(header, headers[header]);
 			}
-			xhr.send(serialize(data, headers["Content-Type"] || type));
+
+			var bodySerialized = null;
+			if (body != null && typeof body === "object") {
+				bodySerialized = serialize(body, headers["Content-Type"])
+			} else {
+				bodySerialized = body;
+			}
+
+			xhr.send(bodySerialized);
 		}
 
 		// Exec plugins
@@ -256,7 +239,11 @@ module.exports = {
 			return JSON.stringify(data);
 		},
 		"application/x-www-form-urlencoded": function(data) {
-
+			var arr = [];
+			for (var attr in data) {
+				arr.push(encodeURIComponent(attr) + '=' + encodeURIComponent(data[attr]));
+			}
+			return arr.join('&');
 		}
 	};
 
