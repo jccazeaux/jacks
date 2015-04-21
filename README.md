@@ -27,7 +27,7 @@ jacks.post("http://my.api/todos")
 ```
 
 # Api
-## plugin(<String> pluginName, <Function> pluginFn)
+## plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)
 You can add a plugin to jacks using the plugin() function on jacks (not on request)
 ```javascript
 jacks.plugin("pluginName", function(jacksRequest) {
@@ -36,7 +36,7 @@ jacks.plugin("pluginName", function(jacksRequest) {
 ```
 A plugin is a function wich receives the request as parameter.
 
-## use(<String> pluginName) | use(<Function> pluginFn)
+## use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
 Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
 ```Javascript
 jacks.use("myPlugin")
@@ -58,7 +58,7 @@ Create a request with the get/post/put/delete methods. Each receives the url as 
 ```jacks.delete(url)``` : creates a DELETE request with the url
 
 ## Request API
-### body(<Object> data)
+### body(&lt;Object&gt; data)
 Sets the body. Only for POST and PUT
 ```Javascript
 jacks.post("http://myurl")
@@ -70,7 +70,7 @@ jacks.post("http://myurl")
      });
 ```
 
-### query(<String> name, <String> value) | query(<object> params)
+### query(&lt;String&gt; name, &lt;String&gt; value) | query(&lt;Object&gt; params)
 Add query parameters. Will concatenate the query parameters to the URL.
 ```Javascript
 jacks.get("http://myurl")
@@ -83,14 +83,14 @@ jacks.get("http://myurl")
      });
 ```
 
-### header(<String> name, <String> value)
+### header(&lt;String&gt; name, &lt;String&gt; value)
 Add a request header.
 ```Javascript
 jacks.get("http://myurl")
      .header("X-MY-HEADER", "foo")
 ```
 
-### use(<String> pluginName) | use(<Function> pluginFn)
+### use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
 Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
 ```Javascript
 jacks.get("http://myurl")
@@ -101,7 +101,7 @@ jacks.get("http://myurl")
 ```
 The plugin will be used for this request only.
 
-### send(<Function> callback, <function> error)
+### send(&lt;Function&gt; callback, &lt;function&gt; error)
 Sends the request.
 
 The callback function will receive a JacksResponse object witch contains
