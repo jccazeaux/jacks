@@ -4,6 +4,7 @@ var jacks = (function() {
 	var exports = {};
 	var serializers = require("./serializers");
 	var parsers = require("./parsers");
+	var listeners = {};
 
 
 	function getXHR() {
@@ -52,7 +53,11 @@ var jacks = (function() {
 		return actualUrl;
 	}
 
-	function JacksResponse(xhr) {
+	/**
+	 * Object JacksResponse
+	 */
+	function JacksResponse(xhr, jacksRequest) {
+		this.url = jacksRequest.url;
 		this.status = xhr.status;
 		this.statusText = xhr.statusText;
 		this.responseText = xhr.responseText;
@@ -65,6 +70,11 @@ var jacks = (function() {
 		this.headers = xhr.getAllResponseHeaders();
 	}
 
+	function JacksError(xhr, jacksRequest) {
+		this.type = xhr.type;
+		this.url = jacksRequest.url;
+	}
+
 
 	/**
 	 * Request object with all request elements
@@ -72,6 +82,8 @@ var jacks = (function() {
 	 * @param {String} url
 	 */
 	function JacksRequest(requestType, url) {
+		/** timeout handler */
+		var timeoutHandler = null;
 		/** Request headers */
 		var headers = {};
 		/** Body, only for post/put */
@@ -155,7 +167,7 @@ var jacks = (function() {
 				pluginNameOrFn(this);
 			}
 			return this;
-		}
+		};
 
 		/**
 		 * Sends the request
@@ -164,16 +176,33 @@ var jacks = (function() {
 		 */
 		this.send = function(callback, error) {
 			var xhr = getXHR();
+			this.xhr = xhr;
 	  		// state change
 			xhr.onreadystatechange = function(){
 				if (xhr.readyState != 4) return;
 
-				callback(new JacksResponse(xhr));
+				stopTimeout();
+				// IE9 bug fix (status read if request aborted results in error...)
+				var status;
+   				try { status = xhr.status } catch(e) { status = 0; }
+
+   				if (status === 0) {
+   					// if request is aborted or timed out, then we launch error.
+   					if (that.aborted) {
+   						return error({type:"abort", url: that.url}, that);
+   					} else if (that.timedout) {
+   						return error({type:"timeout", url: that.url}, that);
+   					}
+   					// else error, ignore statechange
+   					return;
+   				}
+				callback(new JacksResponse(xhr, jacksRequest));
 			};
 			xhr.onerror = function(e) {
-				error(e);
+				error(new JacksError(e, that), that);
 			}
 			xhr.open(requestType, that.url);
+			emit("open");
 			for (var header in headers) {
 				xhr.setRequestHeader(header, headers[header]);
 			}
@@ -186,11 +215,69 @@ var jacks = (function() {
 			}
 
 			xhr.send(bodySerialized);
-		}
+			emit("send");
+			return this;
+		};
+
+		/**
+		 * Abord a request
+		 */
+		this.abort = function() {
+			this.aborted = true;
+			emit("abort");
+			this.xhr.abort();
+			return this;
+		};
+
+		/**
+		 * Define a timeout on the request
+		 */
+		this.timeout = function(delay) {
+			setTimeout(function() {
+				emit("timeout");
+				this.timedout = true;
+				this.xhr.abort();
+			}, delay);
+			return this;
+		};
+
+		/**
+		 * Register to an event on the request.
+		 */
+		this.on = function(eventName, fn) {
+			listeners[eventName] = listeners[eventName] || [];
+			listeners[eventName].push(fn);
+			return this;
+		};
 
 		// Exec plugins
 		for (var i = 0 ; i < globalUses.length ; i++) {
 			this.use(globalUses[i]);
+		}
+
+
+		/**
+		 * Emit event
+		 * @param {String} eventName
+		 * @param {Object} data
+		 */
+		function emit(eventName, data) {
+			var eventListeners = listeners[eventName];
+			if (eventListeners) {
+				for (var i = 0 ; i < eventListeners.length ; i++) {
+					eventListeners[i](data);
+				}
+			}
+		}
+
+		/**
+		 * stops the current timeout if exists
+		 */
+		function stopTimeout() {
+			if (timeoutHandler) {
+				clearTimeout(timeoutHandler);
+				timeoutHandler = null;
+			}
 		}
 	}
 

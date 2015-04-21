@@ -101,12 +101,29 @@ jacks.get("http://myurl")
 ```
 The plugin will be used for this request only.
 
+### on(&lt;String&gt; eventName, &lt;Function&gt; callback)
+Register a callback for an event on the request.
+
+Available events
+* open : when the xmlHttpRequest is opened
+* send : when the xmlHttpRequest is sent
+* timeout : when the request has been aborted due to a timeout
+* abort : when the request has been aborted
+
+### abort()
+Aborts the request.
+
+### timeout(&lt;int&gt; delay)
+Defines a timeout for the request. After the delay (in ms) the request will be aborted.
+
 ### send(&lt;Function&gt; callback, &lt;function&gt; error)
 Sends the request.
 
-The callback function will receive a JacksResponse object witch contains
+### callback
+The callback function takes JacksResponse object as parameter witch contains
 ```Javascript
 {
+	url : <url called>
 	status : <http status code>,
 	statusText : <http status text>,
 	responseText : <raw response body>,
@@ -114,3 +131,15 @@ The callback function will receive a JacksResponse object witch contains
 	headers : <response headers>
 }
 ```
+
+### error
+The error function takes a JacksError as parameter with contains
+```Javascript
+{
+	url : <url called>
+	type : <error type>
+}
+```
+Type will be 
+ - "timeout" if request has been interrupted after a timeout
+ - "abort" if request has been aborted
