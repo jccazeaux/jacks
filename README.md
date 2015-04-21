@@ -8,7 +8,7 @@ jacks.get("http://my.api/todos")
      .header("Accepts", "application/json")
      .send(function(jacksResponse) {
      	// Callback success
-     }, function(e) {
+     }, function(jacksError) {
      	// Callback error
      });
 ```
@@ -21,7 +21,7 @@ jacks.post("http://my.api/todos")
      .header("Content-Type", "application/json")
      .send(function(jacksResponse) {
      	// Callback success
-     }, function(e) {
+     }, function(jacksError) {
      	// Callback error
      });
 ```
@@ -65,7 +65,7 @@ jacks.post("http://myurl")
      .body({"age": 35, "city": "Bordeaux"})
      .send(function(jacksReponse) {
      	// Callback success
-     }, function(e) {
+     }, function(jacksError) {
      	// Callback error
      });
 ```
@@ -78,7 +78,7 @@ jacks.get("http://myurl")
      .query({"age": 35, "city": "Bordeaux"})
      .send(function(jacksReponse) {
      	// Callback success
-     }, function(e) {
+     }, function(jacksError) {
      	// Callback error
      });
 ```
