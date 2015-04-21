@@ -6,7 +6,6 @@ var jacks = (function() {
 	var serializers = require("./serializers");
 	var parsers = require("./parsers");
 	var listeners = {};
-	var timeoutHandler = null;
 
 
 	function getXHR() {
@@ -58,7 +57,8 @@ var jacks = (function() {
 	/**
 	 * Object JacksResponse
 	 */
-	function JacksResponse(xhr) {
+	function JacksResponse(xhr, jacksRequest) {
+		this.url = jacksRequest.url;
 		this.status = xhr.status;
 		this.statusText = xhr.statusText;
 		this.responseText = xhr.responseText;
@@ -83,6 +83,8 @@ var jacks = (function() {
 	 * @param {String} url
 	 */
 	function JacksRequest(requestType, url) {
+		/** timeout handler */
+		var timeoutHandler = null;
 		/** Request headers */
 		var headers = {};
 		/** Body, only for post/put */
@@ -180,21 +182,22 @@ var jacks = (function() {
 			xhr.onreadystatechange = function(){
 				if (xhr.readyState != 4) return;
 
+				stopTimeout();
 				// IE9 bug fix (status read if request aborted results in error...)
 				var status;
    				try { status = xhr.status } catch(e) { status = 0; }
 
    				if (status === 0) {
-   					// if request is aborted or timed out, then we ignore result. Error will be called.
+   					// if request is aborted or timed out, then we launch error.
    					if (that.aborted) {
-   						return error({type:"abort"}, that);
+   						return error({type:"abort", url: that.url}, that);
    					} else if (that.timedout) {
-   						return error({type:"timeout"}, that);
+   						return error({type:"timeout", url: that.url}, that);
    					}
    					// else error, ignore statechange
    					return;
    				}
-				callback(new JacksResponse(xhr));
+				callback(new JacksResponse(xhr, jacksRequest));
 			};
 			xhr.onerror = function(e) {
 				error(new JacksError(e, that), that);
@@ -267,6 +270,16 @@ var jacks = (function() {
 				}
 			}
 		}
+
+		/**
+		 * stops the current timeout if exists
+		 */
+		function stopTimeout() {
+			if (timeoutHandler) {
+				clearTimeout(timeoutHandler);
+				timeoutHandler = null;
+			}
+		}
 	}
 
 	exports.get = function(url) {
@@ -277,6 +290,12 @@ var jacks = (function() {
 	}
 	exports.put = function(url) {
 		return new JacksRequest("PUT", url);
+	}
+	exports.options = function(url) {
+		return new JacksRequest("OPTIONS", url);
+	}
+	exports.head = function(url) {
+		return new JacksRequest("HEAD", url);
 	}
 	exports["delete"] = function(url) {
 		return new JacksRequest("DELETE", url);

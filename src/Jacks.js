@@ -290,6 +290,12 @@ var jacks = (function() {
 	exports.put = function(url) {
 		return new JacksRequest("PUT", url);
 	}
+	exports.options = function(url) {
+		return new JacksRequest("OPTIONS", url);
+	}
+	exports.head = function(url) {
+		return new JacksRequest("HEAD", url);
+	}
 	exports["delete"] = function(url) {
 		return new JacksRequest("DELETE", url);
 	}

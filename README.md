@@ -46,7 +46,7 @@ jacks.use("myPlugin")
 ```
 This plugin will be used for all requests.
 
-## Requests
+## Create a JacksRequest
 Create a request with the get/post/put/delete methods. Each receives the url as argument.
 
 ```jacks.get(url)``` : creates a GET request with the url
@@ -57,8 +57,12 @@ Create a request with the get/post/put/delete methods. Each receives the url as 
 
 ```jacks.delete(url)``` : creates a DELETE request with the url
 
-## Request API
-### body(&lt;Object&gt; data)
+```jacks.options(url)``` : creates a OPTIONS request with the url
+
+```jacks.head(url)``` : creates a HEAD request with the url
+
+## JacksRequest API
+### jacksRequest.body(&lt;Object&gt; data)
 Sets the body. Only for POST and PUT
 ```Javascript
 jacks.post("http://myurl")
@@ -70,7 +74,7 @@ jacks.post("http://myurl")
      });
 ```
 
-### query(&lt;String&gt; name, &lt;String&gt; value) | query(&lt;Object&gt; params)
+### jacksRequest.query(&lt;String&gt; name, &lt;String&gt; value) | query(&lt;Object&gt; params)
 Add query parameters. Will concatenate the query parameters to the URL.
 ```Javascript
 jacks.get("http://myurl")
@@ -83,14 +87,14 @@ jacks.get("http://myurl")
      });
 ```
 
-### header(&lt;String&gt; name, &lt;String&gt; value)
+### jacksRequest.header(&lt;String&gt; name, &lt;String&gt; value)
 Add a request header.
 ```Javascript
 jacks.get("http://myurl")
      .header("X-MY-HEADER", "foo")
 ```
 
-### use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
+### jacksRequest.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
 Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
 ```Javascript
 jacks.get("http://myurl")
@@ -101,7 +105,7 @@ jacks.get("http://myurl")
 ```
 The plugin will be used for this request only.
 
-### on(&lt;String&gt; eventName, &lt;Function&gt; callback)
+### jacksRequest.on(&lt;String&gt; eventName, &lt;Function&gt; callback)
 Register a callback for an event on the request.
 
 Available events
@@ -110,13 +114,13 @@ Available events
 * timeout : when the request has been aborted due to a timeout
 * abort : when the request has been aborted
 
-### abort()
+### jacksRequest.abort()
 Aborts the request.
 
-### timeout(&lt;int&gt; delay)
+### jacksRequest.timeout(&lt;int&gt; delay)
 Defines a timeout for the request. After the delay (in ms) the request will be aborted.
 
-### send(&lt;Function&gt; callback, &lt;function&gt; error)
+### jacksRequest.send(&lt;Function&gt; callback, &lt;function&gt; error)
 Sends the request.
 
 #### callback
