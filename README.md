@@ -119,7 +119,7 @@ Defines a timeout for the request. After the delay (in ms) the request will be a
 ### send(&lt;Function&gt; callback, &lt;function&gt; error)
 Sends the request.
 
-### callback
+#### callback
 The callback function takes JacksResponse object as parameter witch contains
 ```Javascript
 {
@@ -132,7 +132,7 @@ The callback function takes JacksResponse object as parameter witch contains
 }
 ```
 
-### error
+#### error
 The error function takes a JacksError as parameter with contains
 ```Javascript
 {
