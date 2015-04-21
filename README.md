@@ -1,6 +1,19 @@
 # Jacks
 Fluent extensible ajax framework.
+```Javascript
+// Get http://my.api/todos?limit=50
+jacks.get("http://my.api/todos")
+.query("limit", "50")
+.header("Accepts", "application/json")
+.send();
 
+// POST 
+jacks.post("http://my.url/todos")
+.body({"title", "Finish the job", 
+	"date", "2015/12/31"})
+.header("Content-Type", "application/json")
+.send();
+```
 # Api
 ## plugin(<String> pluginName, <Function> pluginFn)
 You can add a plugin to jacks using the plugin() function on jacks (not on request)
@@ -34,12 +47,11 @@ Create a request with the get/post/put/delete methods. Each receives the url as 
 ```jacks.delete(url)``` : creates a DELETE request with the url
 
 ## Request API
-### data(<String> name, <String> value) | data(<Object> data)
-Add data. Only for POST and PUT
+### body(<Object> data)
+Sets the body. Only for POST and PUT
 ```Javascript
 jacks.get("http://myurl")
-.data("age", "35")
-.data({"age": 35, "city": "Bordeaux"})
+.body({"age": 35, "city": "Bordeaux"})
 ```
 
 ### query(<String> name, <String> value) | query(<object> params)
