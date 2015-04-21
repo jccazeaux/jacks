@@ -114,15 +114,3 @@ The callback function will receive a JacksResponse object witch contains
 	headers : <response headers>
 }
 ```
-# Exemples
-```javascript
-jacks.get("http://localhost/")
-     .query("param1", "value1")
-     .query("param2", "value2")
-     .send(function(jacksReponse) {
-     	// Callback success
-     }, function(e) {
-     	// Callback error
-     });
-```
-
