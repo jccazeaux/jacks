@@ -6,7 +6,7 @@ GET http://my.api/todos?limit=50
 jacks.get("http://my.api/todos")
      .query("limit", "50")
      .header("Accepts", "application/json")
-     .send(function(jacksReponse) {
+     .send(function(jacksResponse) {
      	// Callback success
      }, function(e) {
      	// Callback error
@@ -104,6 +104,16 @@ The plugin will be used for this request only.
 ### send(<Function> callback, <function> error)
 Sends the request.
 
+The callback function will receive a JacksResponse object witch contains
+```Javascript
+{
+	status : <http status code>,
+	statusText : <http status text>,
+	responseText : <raw response body>,
+	response : <parsed response body. The parser is selected with Content-Type header. If no parser is found, will contain the raw response body>
+	headers : <response headers>
+}
+```
 # Exemples
 ```javascript
 jacks.get("http://localhost/")
