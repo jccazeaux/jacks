@@ -9,7 +9,7 @@ var jacks = (function() {
 
 	function getXHR() {
 	  if (window.XMLHttpRequest) {
-	    return new XMLHttpRequest;
+	    return new XMLHttpRequest();
 	  } else {
 	    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
 	    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
@@ -17,7 +17,7 @@ var jacks = (function() {
 	    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
 	  }
 	  return false;
-	};
+	}
 	/**
 	 * Serialize body with chosen type
 	 * @param {Object} body
@@ -184,7 +184,7 @@ var jacks = (function() {
 				stopTimeout();
 				// IE9 bug fix (status read if request aborted results in error...)
 				var status;
-   				try { status = xhr.status } catch(e) { status = 0; }
+   				try { status = xhr.status; } catch(e) { status = 0; }
 
    				if (status === 0) {
    					// if request is aborted or timed out, then we launch error.
@@ -196,11 +196,11 @@ var jacks = (function() {
    					// else error, ignore statechange
    					return;
    				}
-				callback(new JacksResponse(xhr, jacksRequest));
+				callback(new JacksResponse(xhr, that));
 			};
 			xhr.onerror = function(e) {
 				error(new JacksError(e, that), that);
-			}
+			};
 			xhr.open(requestType, that.url);
 			emit("open");
 			for (var header in headers) {
@@ -209,7 +209,7 @@ var jacks = (function() {
 
 			var bodySerialized = null;
 			if (body != null && typeof body === "object") {
-				bodySerialized = serialize(body, headers["Content-Type"])
+				bodySerialized = serialize(body, headers["Content-Type"]);
 			} else {
 				bodySerialized = body;
 			}
@@ -283,38 +283,38 @@ var jacks = (function() {
 
 	exports.get = function(url) {
 		return new JacksRequest("GET", url);
-	}
+	};
 	exports.post = function(url) {
 		return new JacksRequest("POST", url);
-	}
+	};
 	exports.put = function(url) {
 		return new JacksRequest("PUT", url);
-	}
+	};
 	exports.options = function(url) {
 		return new JacksRequest("OPTIONS", url);
-	}
+	};
 	exports.head = function(url) {
 		return new JacksRequest("HEAD", url);
-	}
+	};
 	exports["delete"] = function(url) {
 		return new JacksRequest("DELETE", url);
-	}
+	};
 	exports.plugin = function(name, pluginObject) {
 		plugins[name] = pluginObject;
 		return this;
-	}
+	};
 	exports.use = function(pluginNameOrFn) {
 		globalUses.push(pluginNameOrFn);
 		return this;
-	}
+	};
 	exports.parser = function(type, parserFn) {
 		parsers[type] = parserFn;
 		return this;
-	}
+	};
 	exports.serializer = function(type, serializerFn) {
 		serializers[type] = serializerFn;
 		return this;
-	}
+	};
 	return exports;
 })();
 
