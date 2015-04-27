@@ -27,25 +27,6 @@ jacks.post("http://my.api/todos")
 ```
 
 # Main API
-## jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)
-You can add a plugin to jacks using the plugin() function on jacks (not on request)
-```javascript
-jacks.plugin("pluginName", function(jacksRequest) {
-	// Access to all request methods
-});
-```
-A plugin is a function wich receives the request as parameter.
-
-## jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
-Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
-```Javascript
-jacks.use("myPlugin")
-     .use(function(jacksRequest) {
-	// Plugin code
-     })
-```
-This plugin will be used for all requests.
-
 ## jacks.get(&lt;String&gt; url)
 Creates a GET JacksRequest with the url
 
@@ -64,6 +45,24 @@ Creates a OPTIONS JacksRequest with the url
 ## jacks.head(&lt;String&gt; url)
 Creates a HEAD JacksRequest with the url
 
+## jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)
+You can add a plugin to jacks using the plugin() function on jacks (not on request)
+```javascript
+jacks.plugin("pluginName", function(jacksRequest) {
+	// Access to all request methods
+});
+```
+A plugin is a function wich receives the request as parameter.
+
+## jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
+Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
+```Javascript
+jacks.use("myPlugin")
+     .use(function(jacksRequest) {
+	// Plugin code
+     })
+```
+This plugin will be used for all requests.
 
 # JacksRequest API
 ## jacksRequest.body(&lt;Object&gt; data)
