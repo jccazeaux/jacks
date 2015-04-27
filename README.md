@@ -3,7 +3,7 @@ Fluent extensible ajax framework.
 
 GET http://my.api/todos?limit=50
 ```Javascript
-jacks.get("http://my.api/todos")
+jacks().get("http://my.api/todos")
      .query("limit", "50")
      .header("Accepts", "application/json")
      .send(function(jacksResponse) {
@@ -15,7 +15,7 @@ jacks.get("http://my.api/todos")
 
 POST 
 ```Javascript
-jacks.post("http://my.api/todos")
+jacks().post("http://my.api/todos")
      .body({"title", "Finish the job", 
 	    "date", "2015/12/31"})
      .header("Content-Type", "application/json")
@@ -27,22 +27,27 @@ jacks.post("http://my.api/todos")
 ```
 
 # Main API
-## jacks.get(&lt;String&gt; url)
+## jacks()
+This creates a new instance of jacks. This instance will be an empty shell and the base to create requests. Each instance will have its own configuration (see plugins and use). So you can have many instances of jacks, each using different sorts of configuration. In your application you should keep the instances in a context to avoid a recreation each time you need it.
+
+A jacks instance is only the beginning, to start a request use the methods described below.
+
+## jacks().get(&lt;String&gt; url)
 Creates a GET JacksRequest with the url
 
-## jacks.post(&lt;String&gt; url)
+## jacks().post(&lt;String&gt; url)
 Creates a POST JacksRequest with the url
 
-## jacks.put(&lt;String&gt; url)
+## jacks().put(&lt;String&gt; url)
 Creates a PUT JacksRequest with the url
 
-## jacks.delete(&lt;String&gt; url)
+## jacks().delete(&lt;String&gt; url)
 Creates a DELETE JacksRequest with the url
 
-## jacks.options(&lt;String&gt; url)
+## jacks().options(&lt;String&gt; url)
 Creates a OPTIONS JacksRequest with the url
 
-## jacks.head(&lt;String&gt; url)
+## jacks().head(&lt;String&gt; url)
 Creates a HEAD JacksRequest with the url
 
 ## jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)
@@ -57,7 +62,7 @@ A plugin is a function wich receives the request as parameter.
 ## jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
 Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
 ```Javascript
-jacks.use("myPlugin")
+jacks().use("myPlugin")
      .use(function(jacksRequest) {
 	// Plugin code
      })
@@ -68,7 +73,7 @@ This plugin will be used for all requests.
 ## jacksRequest.body(&lt;Object&gt; data)
 Sets the body. Only for POST and PUT
 ```Javascript
-jacks.post("http://myurl")
+jacks().post("http://myurl")
      .body({"age": 35, "city": "Bordeaux"})
      .send(function(jacksReponse) {
      	// Callback success
@@ -80,7 +85,7 @@ jacks.post("http://myurl")
 ## jacksRequest.query(&lt;String&gt; name, &lt;String&gt; value) | query(&lt;Object&gt; params)
 Add query parameters. Will concatenate the query parameters to the URL.
 ```Javascript
-jacks.get("http://myurl")
+jacks().get("http://myurl")
      .query("age", "35")
      .query({"age": 35, "city": "Bordeaux"})
      .send(function(jacksReponse) {
@@ -93,14 +98,14 @@ jacks.get("http://myurl")
 ## jacksRequest.header(&lt;String&gt; name, &lt;String&gt; value)
 Add a request header.
 ```Javascript
-jacks.get("http://myurl")
+jacks().get("http://myurl")
      .header("X-MY-HEADER", "foo")
 ```
 
 ## jacksRequest.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
 Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
 ```Javascript
-jacks.get("http://myurl")
+jacks().get("http://myurl")
      .use("myPlugin")
      .use(function(jacksRequest) {
 	// Plugin code
