@@ -1,6 +1,8 @@
 var jacks = (function () {
 	"use strict";
-	
+
+	var xhrLevel;
+
 	var exports = function() {
 		return new Jacks();
 	};
@@ -49,16 +51,24 @@ var jacks = (function () {
 		var listeners = {};
 
 
-		function getXHR() {
-		  if (window.XMLHttpRequest) {
-		    return new XMLHttpRequest();
-		  } else {
-		    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
-		    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
-		    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
-		    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
-		  }
-		  return false;
+		/**
+		 * XHR polyfills
+		 * - sendAsBinary
+		 */
+		function polyfillXhr() {
+			if (typeof XMLHttpRequest.prototype.sendAsBinary !== "function") {
+				// http://javascript0.org/wiki/Portable_sendAsBinary
+				XMLHttpRequest.prototype.sendAsBinary = function(text){
+					var data = new ArrayBuffer(text.length);
+					var ui8a = new Uint8Array(data, 0);
+					for (var i = 0; i < text.length; i++) ui8a[i] = (text.charCodeAt(i) & 0xff);
+		 
+					var bb = new BlobBuilder(); // doesn't exist in Firefox 4
+					bb.append(data);
+					var blob = bb.getBlob();
+					this.send(blob);
+				}
+			}
 		}
 		/**
 		 * Serialize body with chosen type
@@ -147,7 +157,12 @@ var jacks = (function () {
 			 * url
 			 */
 			this.url = url;
+			/** XHR, instanciate it now to initiate all */
+			this.xhr = getXHR();
 			var that = this;
+
+			// OpenXhr function
+			var openXhr;
 
 			/**
 			 * Add one or more headers. To add one, send param and value. To add more, send an key/value object.
@@ -219,14 +234,36 @@ var jacks = (function () {
 			};
 
 			/**
-			 * Sends the request
-			 * @param {Function} callback
-			 * @param {Function} error
+			 * Cross browser XHR
+			 * It will also distinguish xhr level 1 or level 2
 			 */
-			this.send = function(callback, error) {
-				var xhr = getXHR();
-				this.xhr = xhr;
-		  		// state change
+			function getXHR() {
+			  if (window.XMLHttpRequest) {
+				// First we test wich xhr we can use
+				if (new XMLHttpRequest().upload) {
+					xhrLevel = 2;
+					openXhr = openXhr2;
+				} else {
+					xhrLevel = 1;
+					openXhr = openXhr1;
+				}
+				return new XMLHttpRequest();
+			  } else {
+			  	xhrLevel = 1;
+			  	openXhr = openXhr2;
+			    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
+			    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
+			    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
+			    try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
+			  }
+			  return false;
+			}
+			/**
+			 * Open XHR level 1
+			 */
+			function openXhr1(callback, error) {
+				var xhr = that.xhr;
+				// state change
 				xhr.onreadystatechange = function(){
 					if (xhr.readyState != 4) return;
 
@@ -255,6 +292,68 @@ var jacks = (function () {
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
 				}
+			}
+
+			/**
+			 * Open XHR level 2
+			 */
+			function openXhr2(callback, error) {
+				var xhr = that.xhr;
+		  		// state change
+				xhr.onload = function(){
+					stopTimeout();
+					// IE9 bug fix (status read if request aborted results in error...)
+					var status;
+	   				try { status = xhr.status; } catch(e) { status = 0; }
+
+	   				if (status === 0) {
+	   					// if request is aborted or timed out, then we launch error.
+	   					if (that.aborted) {
+	   						return error({type:"abort", url: that.url}, that);
+	   					} else if (that.timedout) {
+	   						return error({type:"timeout", url: that.url}, that);
+	   					}
+	   					// else error, ignore statechange
+	   					return;
+	   				}
+					callback(new JacksResponse(xhr, that));
+				};
+				xhr.onerror = function(e) {
+					error(new JacksError(e, that), that);
+				};
+				xhr.onprogress = function(e) {
+					emit("progress", e);
+				};
+				xhr.onabort = function(e) {
+					emit("abort", e);
+				};
+				xhr.ontimeout = function(e) {
+					emit("timeout", e);
+				};
+				xhr.onloadstart = function(e) {
+					emit("loadstart", e);
+				};
+				xhr.onloadend = function(e) {
+					emit("loadend", e);
+				};
+				xhr.upload.onprogress = function(e) {
+					emit("upload-progress", e);
+				};
+				xhr.open(requestType, that.url);
+				emit("open");
+				for (var header in headers) {
+					xhr.setRequestHeader(header, headers[header]);
+				}
+			}
+
+			/**
+			 * Sends the request
+			 * @param {Function} callback
+			 * @param {Function} error
+			 */
+			this.send = function(callback, error) {
+
+				openXhr(callback, error);
 
 				var bodySerialized = null;
 				if (body != null && typeof body === "object") {
@@ -263,7 +362,28 @@ var jacks = (function () {
 					bodySerialized = body;
 				}
 
-				xhr.send(bodySerialized);
+				this.xhr.send(bodySerialized);
+				emit("send");
+				return this;
+			};
+
+			/**
+			 * Sends the request
+			 * @param {Function} callback
+			 * @param {Function} error
+			 */
+			this.sendAsbinary = function(callback, error) {
+
+				openXhr(callback, error);
+
+				var bodySerialized = null;
+				if (body != null && typeof body === "object") {
+					bodySerialized = serialize(body, headers["Content-Type"]);
+				} else {
+					bodySerialized = body;
+				}
+
+				xhr.sendAsBinary(bodySerialized);
 				emit("send");
 				return this;
 			};
