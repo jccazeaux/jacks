@@ -67,7 +67,7 @@ var jacks = (function () {
 					bb.append(data);
 					var blob = bb.getBlob();
 					this.send(blob);
-				}
+				};
 			}
 		}
 		/**
@@ -111,6 +111,7 @@ var jacks = (function () {
 		 * @param {JacksRequest} jacksRequest
 		 */
 		function JacksResponse(xhr, jacksRequest) {
+			this.xhr = xhr;
 			this.url = jacksRequest.url;
 			this.status = xhr.status;
 			this.statusText = xhr.statusText;
@@ -119,7 +120,7 @@ var jacks = (function () {
 			if (parsers[contentType]){
 				this.response = parsers[contentType](xhr.responseText);
 			} else {
-				xhr.response = xhr.responseText;
+				this.response = xhr.responseText;
 			}
 			this.headers = xhr.getAllResponseHeaders();
 		}
