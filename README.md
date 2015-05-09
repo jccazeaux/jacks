@@ -121,6 +121,10 @@ Available events
 * send : when the xmlHttpRequest is sent
 * timeout : when the request has been aborted due to a timeout
 * abort : when the request has been aborted
+* loadstart : XMLHttpRequest loadstart event
+* loadend : XMLHttpRequest loadend event
+* progress : XMLHttpRequest progress event
+* upload-progress : XMLHttpRequest upload progress event
 
 ## jacksRequest.abort()
 Aborts the request.
@@ -130,6 +134,9 @@ Defines a timeout for the request. After the delay (in ms) the request will be a
 
 ## jacksRequest.send(&lt;Function&gt; callback, &lt;function&gt; error)
 Sends the request.
+
+## jacksRequest.sendAsBinary(&lt;Function&gt; callback, &lt;function&gt; error)
+Sends the request as binary.
 
 ### callback
 The callback function takes JacksResponse object as parameter witch contains
