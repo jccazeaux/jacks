@@ -69,6 +69,72 @@ jacks().use("myPlugin")
 ```
 This plugin will be used for all requests.
 
+## Mocks
+Jacks comes with a mock API.
+
+```Javascript
+jacks.mock(request, response);
+```
+
+### request
+Request defines wich requests are mocked. It contains two attributes
+
+* url : url of mocked resource
+* method : mocked method. If not specifed, all methods will be mocked
+
+### response
+Mocked response to send
+
+* responseText : Text of the response
+* response : function callback to create a dynamic responseText. The function takes as only parameter a "done" callback. Use it if your callback is asynchronous.
+* headers : response headers
+* status : status code
+* statusText : status text
+* error : mock an error
+* delay : simulates a delayed response. In ms.
+
+### Exemples
+#### Basic mock
+
+```Javascript
+jacks.mock({
+     url: "/myurl"
+}, {
+     responseText: "My mocked response",
+     headers: {"Content-Type": "plain/text"}
+});
+```
+#### Dynamic mock
+
+```Javascript
+jacks.mock({
+     url: "/myurl"
+}, {
+     response: function() {
+          this.responseText = "My dynamic mock";
+     },
+     headers: {"Content-Type": "plain/text"}
+});
+```
+
+#### Asynchronous dynamic mock
+
+```Javascript
+jacks.mock({
+     url: "/myurl"
+}, {
+     response: function(done) {
+          var that = this;
+          setTimeout(function() {
+               that.responseText = "My dynamic mock";
+               done();
+          }, 0);
+     },
+     headers: {"Content-Type": "plain/text"}
+});
+```
+
+
 # JacksRequest API
 ## jacksRequest.body(&lt;Object&gt; data)
 Sets the body. Only for POST and PUT

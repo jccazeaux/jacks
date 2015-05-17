@@ -20,6 +20,26 @@ var jacks = (function () {
 		return this;
 	};
 
+	/** Array of mocks */
+	var mocks = [];
+	/**
+	 * Adds a mock
+	 * @param {Object} request - request to mock. Can contain url and method
+	 * @param {Object|Function} response - response settings for this mock. If it's a function, it must return a settings object
+	 */
+	exports.mock = function(req, res) {
+		mocks.push({request: req, response: res});
+		return this;
+	};
+	/**
+	 * Clears all the mocks
+	 */
+	exports.clearMocks = function() {
+		mocks = [];
+		return this;
+	};
+
+
 	/**
 	 * Jacks main object
 	 * This constructor construct a Jacks object. Having Jacks objects authorize many instances. You can configure plugin uses 
@@ -260,6 +280,55 @@ var jacks = (function () {
 			  return false;
 			}
 			/**
+			 * Send mocked
+			 * @param {Function} callback - OK callback
+			 * @param {error} error - error callback
+			 * @param {mock} mock - object containing mock response
+			 */
+			function sendMocked(callback, error, mock) {
+
+				var done = function() {
+					var xhr = {
+						responseText: mock.responseText,
+						getAllResponseHeaders: function() {
+							return mock.headers;
+						},
+						getResponseHeader: function(name) {
+							return mock.headers ? mock.headers[name] : null;
+						},
+						status: mock.status,
+						statusText: mock.statusText
+					};
+					
+					emit("open");
+					if (mock.error) {
+						setTimeout(function() {
+							error(new JacksError(mock.error, that));	
+						}, mock.delay||0);
+					}
+					
+					setTimeout(function() {
+						callback(new JacksResponse(xhr, that));	
+					}, mock.delay||0);
+
+				};
+
+				// If we have a function in mock.response, execute it. 
+				if (typeof mock.response === "function") {
+					// If it has no parameter, execute done synchronously
+					if (mock.response.length === 0) {
+						mock.response();
+						done();
+					} else {
+						// If it has one parameter, send the done
+						mock.response(done);
+					}
+				} else {
+					done();
+				}
+			}
+
+			/**
 			 * Open XHR level 1
 			 */
 			function openXhr1(callback, error) {
@@ -354,6 +423,11 @@ var jacks = (function () {
 			 */
 			this.send = function(callback, error) {
 
+				var mockedResponse = getMock();
+				if (mockedResponse) {
+					sendMocked(callback, error, mockedResponse);
+					return this;
+				}
 				openXhr(callback, error);
 
 				var bodySerialized = null;
@@ -375,6 +449,11 @@ var jacks = (function () {
 			 */
 			this.sendAsbinary = function(callback, error) {
 
+				var mockedResponse = getMock();
+				if (mockedResponse) {
+					sendMocked(callback, error, mockedResponse);
+					return this;
+				}
 				openXhr(callback, error);
 
 				var bodySerialized = null;
@@ -447,6 +526,16 @@ var jacks = (function () {
 				if (timeoutHandler) {
 					clearTimeout(timeoutHandler);
 					timeoutHandler = null;
+				}
+			}
+
+			function getMock() {
+				var mock;
+				for (var i in mocks) {
+					mock = mocks[i];
+					if (mock.request.url == that.url && (!mock.request.method || mock.request.method.toUpperCase() === that.requestType.toUpperCase())) {
+						return mock.response;
+					}
 				}
 			}
 		}
