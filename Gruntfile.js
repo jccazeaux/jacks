@@ -1,6 +1,23 @@
 module.exports = function(grunt) {
 
   grunt.initConfig({
+    pkg: grunt.file.readJSON('./package.json'),
+    uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+          '<%= grunt.template.today("yyyy-mm-dd") %>\n' + 
+          ' * https://github.com/jccazeaux/Jacks\n' +
+          ' * Copyright (c) 2015 Jean-Christophe Cazeaux.\n' +
+          ' * Licensed under the MIT license.\n' +
+          ' */'
+      },
+      build: {
+        files: {
+          'dist/jacks.min.js': ['src/Jacks.js']
+        }
+      }
+    },
+
     connect: {
       server: {
         options: {
@@ -41,6 +58,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   
   grunt.registerTask('default', ['browserify']);
   
