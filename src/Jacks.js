@@ -3,6 +3,9 @@ var jacks = (function () {
 
 	var xhrLevel;
 
+	/** Array of mocks */
+	var mocks = [];
+
 	var exports = function() {
 		return new Jacks();
 	};
@@ -20,8 +23,6 @@ var jacks = (function () {
 		return this;
 	};
 
-	/** Array of mocks */
-	var mocks = [];
 	/**
 	 * Adds a mock
 	 * @param {Object} request - request to mock. Can contain url and method
@@ -68,6 +69,8 @@ var jacks = (function () {
 				return JSON.parse(data);
 			}
 		};
+
+		/** registered event listeners */
 		var listeners = {};
 
 
@@ -170,19 +173,15 @@ var jacks = (function () {
 			var body = null;
 			/** Query parameters, to append on url */
 			var query = null;
-			/**
-			 * request type
-			 */
+			/** request type */
 			this.requestType = requestType;
-			/**
-			 * url
-			 */
+			/** url */
 			this.url = url;
 			/** XHR, instanciate it now to initiate all */
 			this.xhr = getXHR();
 			var that = this;
 
-			// OpenXhr function
+			// OpenXhr function, will be setted with xhr1 or xhr2. Depends on browser
 			var openXhr;
 
 			/**
@@ -271,7 +270,7 @@ var jacks = (function () {
 				return new XMLHttpRequest();
 			  } else {
 			  	xhrLevel = 1;
-			  	openXhr = openXhr2;
+			  	openXhr = openXhr1;
 			    try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
 			    try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch(e) {}
 			    try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch(e) {}
@@ -529,11 +528,21 @@ var jacks = (function () {
 				}
 			}
 
+			/**
+			 * Gets the mock corresponding to this request, if exists
+			 * @return {Object} mock found, or undefined
+			 */
 			function getMock() {
 				var mock;
 				for (var i in mocks) {
 					mock = mocks[i];
-					if (mock.request.url == that.url && (!mock.request.method || mock.request.method.toUpperCase() === that.requestType.toUpperCase())) {
+					var sameUrl = false;
+					if (mock.request.url instanceof RegExp) {
+						sameUrl = mock.request.url.test(that.url);
+					} else {
+						sameUrl = (mock.request.url === that.url);
+					}
+					if (sameUrl && (!mock.request.method || mock.request.method.toUpperCase() === that.requestType.toUpperCase())) {
 						return mock.response;
 					}
 				}

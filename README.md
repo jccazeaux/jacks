@@ -79,7 +79,7 @@ jacks.mock(request, response);
 ### request
 Request defines wich requests are mocked. It contains two attributes
 
-* url : url of mocked resource
+* url : url of mocked resource. Can be a String or a regular expression
 * method : mocked method. If not specifed, all methods will be mocked
 
 ### response

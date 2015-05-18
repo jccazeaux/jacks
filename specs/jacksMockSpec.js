@@ -16,6 +16,36 @@ describe("Mocks", function() {
 		});
 	});
 
+	it("Mocks a get with regexp", function(done) {
+		jacks.clearMocks().mock({
+			url: /.*specs.*/,
+			method: "get"
+		},
+		{
+			responseText: "Hello"
+		});
+		var request = jacks().get(url)
+		.send(function(response) {
+			expect(response.responseText).toBe("Hello");
+			done();
+		});
+	});
+
+	it("Mocks the correct url", function(done) {
+		jacks.clearMocks().mock({
+			url: url,
+			method: "get"
+		},
+		{
+			responseText: "Hello"
+		});
+		var request = jacks().get(url + "?dummy")
+		.send(function(response) {
+			expect(response.responseText).not.toBe("Hello");
+			done();
+		});
+	});
+
 	it("Doesn't mock if wrond verb is defined", function(done) {
 		jacks.clearMocks().mock({
 			url: url,
