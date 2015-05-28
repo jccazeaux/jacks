@@ -18,8 +18,8 @@ var jacks = (function () {
 	 * @param {String} name - Name of the plugin
 	 * @param {Function} fn - plugin function. Will receive the JacksRequest as parameter
 	 */
-	exports.plugin = function(name, fn) {
-		plugins[name] = fn;
+	exports.plugin = function(name, fnReq, fnRes) {
+		plugins[name] = {onRequest: fnReq, onResponse: fnRes};
 		return this;
 	};
 
@@ -128,25 +128,6 @@ var jacks = (function () {
 			return actualUrl;
 		}
 
-		/**
-		 * JacksResponse Object
-		 * @param {XMLHttpRequest} xhr
-		 * @param {JacksRequest} jacksRequest
-		 */
-		function JacksResponse(xhr, jacksRequest) {
-			this.xhr = xhr;
-			this.url = jacksRequest.url;
-			this.status = xhr.status;
-			this.statusText = xhr.statusText;
-			this.responseText = xhr.responseText;
-			var contentType = xhr.getResponseHeader("Content-Type");
-			if (parsers[contentType]){
-				this.response = parsers[contentType](xhr.responseText);
-			} else {
-				this.response = xhr.responseText;
-			}
-			this.headers = xhr.getAllResponseHeaders();
-		}
 
 		/**
 		 * JacksError Object
@@ -180,9 +161,33 @@ var jacks = (function () {
 			/** XHR, instanciate it now to initiate all */
 			this.xhr = getXHR();
 			var that = this;
+			var usesOnResponse = [];
 
 			// OpenXhr function, will be setted with xhr1 or xhr2. Depends on browser
 			var openXhr;
+
+			/**
+			 * JacksResponse Object
+			 * @param {XMLHttpRequest} xhr
+			 * @param {JacksRequest} jacksRequest
+			 */
+			function JacksResponse(xhr, jacksRequest) {
+				this.xhr = xhr;
+				this.url = jacksRequest.url;
+				this.status = xhr.status;
+				this.statusText = xhr.statusText;
+				this.responseText = xhr.responseText;
+				var contentType = xhr.getResponseHeader("Content-Type");
+				if (parsers[contentType]){
+					this.response = parsers[contentType](xhr.responseText);
+				} else {
+					this.response = xhr.responseText;
+				}
+				this.headers = xhr.getAllResponseHeaders();
+				for (var i = 0 ; i < usesOnResponse.length ; i++) {
+					usesOnResponse[i](this);
+				}
+			}
 
 			/**
 			 * Add one or more headers. To add one, send param and value. To add more, send an key/value object.
@@ -241,14 +246,22 @@ var jacks = (function () {
 			 * executes a plugin
 			 * @param {Function} pluginFn
 			 */
-			this.use = function(pluginNameOrFn) {
+			this.use = function(pluginNameOrFn, fnOnResponse) {
 				if (typeof pluginNameOrFn == "string") {
 					if (plugins[pluginNameOrFn] == null) {
 						throw "Plugin " + globalUses[i] + " not found";
 					}
-					plugins[pluginNameOrFn](this);
+					if (typeof plugins[pluginNameOrFn].onRequest === "function") {
+						plugins[pluginNameOrFn].onRequest(this);
+					}
+					if (typeof plugins[pluginNameOrFn].onResponse === "function") {
+						usesOnResponse.push(plugins[pluginNameOrFn].onResponse);
+					}
 				} else if (typeof pluginNameOrFn === "function") {
 					pluginNameOrFn(this);
+				}
+				if (typeof fnOnResponse === "function") {
+					usesOnResponse.push(fnOnResponse);
 				}
 				return this;
 			};
@@ -500,7 +513,12 @@ var jacks = (function () {
 
 			// Exec plugins
 			for (var i = 0 ; i < globalUses.length ; i++) {
-				this.use(globalUses[i]);
+				if (typeof globalUses[i] === "string") {
+					this.use(globalUses[i]);	
+				} else {
+					this.use(globalUses[i].onRequest, globalUses[i].onResponse);
+				}
+				
 			}
 
 
@@ -567,8 +585,12 @@ var jacks = (function () {
 		this["delete"] = function(url) {
 			return new JacksRequest("DELETE", url);
 		};
-		this.use = function(pluginNameOrFn) {
-			globalUses.push(pluginNameOrFn);
+		this.use = function(pluginNameOrFn, fnOnResponse) {
+			if (typeof pluginNameOrFn === "string") {
+				globalUses.push(pluginNameOrFn);
+			} else if (typeof pluginNameOrFn === "function") {
+				globalUses.push({onRequest: pluginNameOrFn, onResponse: fnOnResponse});
+			}
 			return this;
 		};
 		this.parser = function(type, parserFn) {

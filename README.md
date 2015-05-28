@@ -50,21 +50,25 @@ Creates a OPTIONS JacksRequest with the url
 ## jacks().head(&lt;String&gt; url)
 Creates a HEAD JacksRequest with the url
 
-## jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)
-You can add a plugin to jacks using the plugin() function on jacks (not on request)
+## jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFnOnRequest, &lt;Function&gt; pluginFnOnResponse)
+You can add a plugin to jacks using the plugin() function on jacks (not on request). Plugins have two functions. One executed on request, the other on response. So you can add custom code on request or response construction.
 ```javascript
 jacks.plugin("pluginName", function(jacksRequest) {
 	// Access to all request methods
+}, function(jacksResponse) {
+     // Access to all response
 });
 ```
 A plugin is a function wich receives the request as parameter.
 
-## jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
-Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
+## jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFnOnRequest, &lt;Function&gt; pluginFnOnResponse)
+Use a plugin. Parameter can be the name of a declared plugin or live functions for plugin on request and plugin on response.
 ```Javascript
 jacks().use("myPlugin")
      .use(function(jacksRequest) {
-	// Plugin code
+          // Plugin code
+     }, function(jacksResponse) {
+          // Plugin code
      })
 ```
 This plugin will be used for all requests.
@@ -168,14 +172,16 @@ jacks().get("http://myurl")
      .header("X-MY-HEADER", "foo")
 ```
 
-## jacksRequest.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)
-Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin
+## jacksRequest.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFnOnRequest, &lt;Function&gt; pluginFnOnResponse)
+Use a plugin. Parameter can be the name of a declared plugin or live functions for plugin on request and plugin on response.
 ```Javascript
 jacks().get("http://myurl")
      .use("myPlugin")
      .use(function(jacksRequest) {
-	// Plugin code
-     })
+         // Plugin code
+     }, function(jacksResponse) {
+         // Plugin code
+     });
 ```
 The plugin will be used for this request only.
 

@@ -22,19 +22,25 @@ describe("Plugins", function() {
 			// All request must have this query parameter
 			jacksRequest.query("iAm", "Yoda");
 		}
+		function vader(jacksResponse) {
+			// All request must have this query parameter
+			jacksResponse.responseText = "I'm your father";
+		}
 		var myJacks = jacks();
 		myJacks
-		.use(yoda)
+		.use(yoda, vader)
 		.get(url)
 		.query("param1", "value")
 		.send(function(response) {
 			expect(response.url).toBe(url + "?iAm=Yoda&param1=value");
-			// Try again to that the plugin is still there
+			expect(response.responseText).toBe("I'm your father");
+			// Try again to ensure that the plugin is still there
 			myJacks
 			.get(url)
 			.query("param1", "value")
 			.send(function(response) {
 				expect(response.url).toBe(url + "?iAm=Yoda&param1=value");
+				expect(response.responseText).toBe("I'm your father");
 				done();
 			});
 		});
@@ -53,6 +59,21 @@ describe("Plugins", function() {
 		.use("notVader")
 		.send(function(response) {
 			expect(response.url).toBe(url + "?param1=value&iAmNot=Vader")
+			done();
+		});
+	});
+
+	it("Uses a configured plugin on response", function(done) {
+
+		jacks.plugin("Vader", null, function notVader(jacksResponse) {
+			// All request must have this query parameter
+			jacksResponse.responseText = "I'm your father";
+		});
+		jacks()
+		.get(url)
+		.use("Vader")
+		.send(function(response) {
+			expect(response.responseText).toBe("I'm your father")
 			done();
 		});
 	});
