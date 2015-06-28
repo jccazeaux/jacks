@@ -173,6 +173,8 @@ var jacks = (function () {
 			var body = null;
 			/** Query parameters, to append on url */
 			var query = null;
+			/** async mode */
+			var async = true;
 			/** request type */
 			this.requestType = requestType;
 			/** url */
@@ -209,6 +211,15 @@ var jacks = (function () {
 					return body;
 				}
 				body = value;
+				return this;
+			};
+
+			/**
+			 * Switches to sync mode
+			 * @returns this or the body if first param is undefined
+			 */
+			this.sync = function() {
+				async = false;
 				return this;
 			};
 
@@ -356,7 +367,7 @@ var jacks = (function () {
 				xhr.onerror = function(e) {
 					error(new JacksError(e, that), that);
 				};
-				xhr.open(requestType, that.url);
+				xhr.open(requestType, that.url, async);
 				emit("open");
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
@@ -408,7 +419,7 @@ var jacks = (function () {
 				xhr.upload.onprogress = function(e) {
 					emit("upload-progress", e);
 				};
-				xhr.open(requestType, that.url);
+				xhr.open(requestType, that.url, async);
 				emit("open");
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);

@@ -195,6 +195,9 @@ Available events
 ## jacksRequest.abort()
 Aborts the request.
 
+## jacksRequest.sync()
+Switches the request to synchronous mode. By default it's asynchronous.
+
 ## jacksRequest.timeout(&lt;int&gt; delay)
 Defines a timeout for the request. After the delay (in ms) the request will be aborted.
 

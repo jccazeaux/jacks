@@ -9,4 +9,27 @@ describe("Url query params test", function() {
 		expect(request.url).toBe(url + "?param1=value1&param2=value2");
 	});
 });
+describe("Sync mode", function() {
 
+	it("Sends sync request", function(done) {
+		var foo = true;
+		jacks().get(url)
+		.sync()
+		.send(function() {
+			expect(foo).toBe(true);
+			done();
+		});
+
+		foo = false;
+	});
+	it("Sends async request", function(done) {
+		var foo = true;
+		jacks().get(url)
+		.send(function() {
+			expect(foo).toBe(false);
+			done();
+		});
+
+		foo = false;
+	});
+});
