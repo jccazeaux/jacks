@@ -192,6 +192,25 @@ Available events
 * progress : XMLHttpRequest progress event
 * upload-progress : XMLHttpRequest upload progress event
 
+## jacksRequest.hook(&lt;String&gt; hookName, &lt;Function&gt; callback)
+Register a hook. A hook is for plugins to add features at every important state. The hooks receive a data object containing
+
+```javascript
+     {
+          request : JacksRequest object,
+          error: jacksError object,
+          response: jacksReponse object
+     }
+```
+
+Request is always available. Response and error are available only when error occured or response is available.
+
+Available hooks
+* beforeOpen : before the xmlHttpRequest is opened
+* beforeSend : before the xmlHttpRequest is sent
+* beforeError : when the XMLHttpRequest threw an error, but just before the callback
+* beforeResponse : when the XMLHttpRequest response is available, but just before the callback
+
 ## jacksRequest.abort()
 Aborts the request.
 
