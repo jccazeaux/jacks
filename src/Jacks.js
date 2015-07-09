@@ -138,7 +138,7 @@ var jacks = (function () {
 		 */
 		function JacksResponse(xhr, jacksRequest) {
 			this.xhr = xhr;
-			this.url = jacksRequest.url;
+			this.url = xhr.responseURL;
 			this.status = xhr.status;
 			this.statusText = xhr.statusText;
 			this.responseText = xhr.responseText;
@@ -382,7 +382,7 @@ var jacks = (function () {
 					triggerHook("beforeError", {request: that, error: err});
 					error(err, that);
 				};
-				triggerHook("beforeOpen", this);
+				triggerHook("beforeOpen", {request: that});
 				xhr.open(requestType, that.url, async);
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
@@ -442,7 +442,7 @@ var jacks = (function () {
 				xhr.upload.onprogress = function(e) {
 					emit("upload-progress", e);
 				};
-				triggerHook("beforeOpen", this);
+				triggerHook("beforeOpen", {request: that});
 				xhr.open(requestType, that.url, async);
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
@@ -470,7 +470,6 @@ var jacks = (function () {
 					bodySerialized = body;
 				}
 
-				triggerHook("beforeSend", this);
 				this.xhr.send(bodySerialized);
 				return this;
 			};
@@ -496,7 +495,6 @@ var jacks = (function () {
 					bodySerialized = body;
 				}
 
-				triggerHook("beforeSend", this);
 				xhr.sendAsBinary(bodySerialized);
 				return this;
 			};

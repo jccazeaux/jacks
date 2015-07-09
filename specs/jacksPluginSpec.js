@@ -12,7 +12,8 @@ describe("Plugins", function() {
 		.query("param1", "value")
 		.use(notVader)
 		.send(function(response) {
-			expect(response.url).toBe(url + "?param1=value&iAmNot=Vader");
+			var query = response.url.substring(response.url.indexOf("?"));
+			expect(query).toBe("?param1=value&iAmNot=Vader");
 			done();
 		});
 	});
@@ -28,13 +29,15 @@ describe("Plugins", function() {
 		.get(url)
 		.query("param1", "value")
 		.send(function(response) {
-			expect(response.url).toBe(url + "?iAm=Yoda&param1=value");
+			var query = response.url.substring(response.url.indexOf("?"));
+			expect(query).toBe("?iAm=Yoda&param1=value");
 			// Try again to that the plugin is still there
 			myJacks
 			.get(url)
 			.query("param1", "value")
 			.send(function(response) {
-				expect(response.url).toBe(url + "?iAm=Yoda&param1=value");
+				var query = response.url.substring(response.url.indexOf("?"));
+				expect(query).toBe("?iAm=Yoda&param1=value");
 				done();
 			});
 		});
@@ -52,7 +55,8 @@ describe("Plugins", function() {
 		.query("param1", "value")
 		.use("notVader")
 		.send(function(response) {
-			expect(response.url).toBe(url + "?param1=value&iAmNot=Vader")
+			var query = response.url.substring(response.url.indexOf("?"));
+			expect(query).toBe("?param1=value&iAmNot=Vader")
 			done();
 		});
 	});
@@ -70,14 +74,16 @@ describe("Plugins", function() {
 		.get(url)
 		.query("param1", "value")
 		.send(function(response) {
-			expect(response.url).toBe(url + "?iAm=Yoda&param1=value")
+			var query = response.url.substring(response.url.indexOf("?"));
+			expect(query).toBe("?iAm=Yoda&param1=value")
 		
 			myJacks
 			.get(url)
 			.query("param1", "value")
 			.send(function(response) {
 				// Try again to that the plugin is still there
-				expect(response.url).toBe(url + "?iAm=Yoda&param1=value")
+				var query = response.url.substring(response.url.indexOf("?"));
+				expect(query).toBe("?iAm=Yoda&param1=value")
 				done();
 			});
 		});

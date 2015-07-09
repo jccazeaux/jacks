@@ -207,7 +207,6 @@ Request is always available. Response and error are available only when error oc
 
 Available hooks
 * beforeOpen : before the xmlHttpRequest is opened
-* beforeSend : before the xmlHttpRequest is sent
 * beforeError : when the XMLHttpRequest threw an error, but just before the callback
 * beforeResponse : when the XMLHttpRequest response is available, but just before the callback
 
