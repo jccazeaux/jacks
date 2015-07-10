@@ -318,7 +318,7 @@ var jacks = (function () {
 					emit("open");
 					if (mock.error) {
 						setTimeout(function() {
-							var err = new JacksError(xhr, that, mock.error);
+							var err = new JacksError(xhr, that, mock.error.type, mock.error);
 							triggerHook("beforeError", {request: that, error: err});
 							error && error(err);
 						}, mock.delay||0);
