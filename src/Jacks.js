@@ -156,8 +156,10 @@ var jacks = (function () {
 		 * @param {XMLHttpRequest} xhr
 		 * @param {JacksRequest} jacksRequest
 		 */
-		function JacksError(xhr, jacksRequest) {
-			this.type = xhr.type;
+		function JacksError(xhr, jacksRequest, type, origin) {
+			this.xhr = xhr;
+			this.type = type;
+			this.origin = origin;
 			this.url = jacksRequest.url;
 		}
 
@@ -316,16 +318,22 @@ var jacks = (function () {
 					emit("open");
 					if (mock.error) {
 						setTimeout(function() {
-							var err = new JacksError(mock.error, that);
+							var err = new JacksError(xhr, that, mock.error);
 							triggerHook("beforeError", {request: that, error: err});
-							error(err, that);
+							error && error(err, that);
 						}, mock.delay||0);
 					}
 					
 					setTimeout(function() {
-		   				var response = new JacksResponse(xhr, that);
-						triggerHook("beforeResponse", {request: that, response: response});
-						callback(response);
+						try {
+			   				var response = new JacksResponse(xhr, that);
+							triggerHook("beforeResponse", {request: that, response: response});
+							callback && callback(response);
+						} catch(e) {
+							var err = new JacksError(xhr, that, "parsing", e);
+							triggerHook("beforeError", {request: that, error: err});
+							error && error(err, that);
+						}
 					}, mock.delay||0);
 
 				};
@@ -373,12 +381,18 @@ var jacks = (function () {
 	   					// else error, ignore statechange
 	   					return;
 	   				}
-	   				var response = new JacksResponse(xhr, that);
-					triggerHook("beforeResponse", {request: that, response: response});
-					callback(response);
+	   				try {
+	   					var response = new JacksResponse(xhr, that);
+						triggerHook("beforeResponse", {request: that, response: response});
+						callback && callback(response);
+	   				} catch(e) {
+	   					var err = new JacksError(xhr, that, "parsing", e);
+						triggerHook("beforeError", {request: that, error: err});
+						error && error(err, that);
+					}
 				};
 				xhr.onerror = function(e) {
-					var err = new JacksError(e, that);
+					var err = new JacksError(xhr, that, e.type, e);
 					triggerHook("beforeError", {request: that, error: err});
 					error(err, that);
 				};
@@ -415,12 +429,18 @@ var jacks = (function () {
 	   					// else error, ignore statechange
 	   					return;
 	   				}
-	   				var response = new JacksResponse(xhr, that);
-					triggerHook("beforeResponse", {request: that, response: response});
-					callback(response);
+	   				try {
+	   					var response = new JacksResponse(xhr, that);
+						triggerHook("beforeResponse", {request: that, response: response});
+						callback && callback(response);
+	   				} catch(e) {
+	   					var err = new JacksError(xhr, that, "parsing", e);
+						triggerHook("beforeError", {request: that, error: err});
+						error && error(err, that);
+					}
 				};
 				xhr.onerror = function(e) {
-					var err = new JacksError(e, that);
+					var err = new JacksError(xhr, that, e.type, e);
 					triggerHook("beforeError", {request: that, error: err});
 					error(err, that);
 				};
@@ -465,7 +485,13 @@ var jacks = (function () {
 
 				var bodySerialized = null;
 				if (body != null && typeof body === "object") {
-					bodySerialized = serialize(body, headers["Content-Type"]);
+	   				try {
+						bodySerialized = serialize(body, headers["Content-Type"]);
+	   				} catch(e) {
+	   					var err = new JacksError(xhr, that, "serializer", e);
+						triggerHook("beforeError", {request: that, error: err});
+						error && error(err, that);
+					}
 				} else {
 					bodySerialized = body;
 				}
@@ -490,7 +516,13 @@ var jacks = (function () {
 
 				var bodySerialized = null;
 				if (body != null && typeof body === "object") {
-					bodySerialized = serialize(body, headers["Content-Type"]);
+	   				try {
+						bodySerialized = serialize(body, headers["Content-Type"]);
+	   				} catch(e) {
+	   					var err = new JacksError(xhr, that, "serializer", e);
+						triggerHook("beforeError", {request: that, error: err});
+						error && error(err, that);
+					}
 				} else {
 					bodySerialized = body;
 				}

@@ -233,7 +233,7 @@ The callback function takes JacksResponse object as parameter witch contains
 	status : <http status code>,
 	statusText : <http status text>,
 	responseText : <raw response body>,
-	response : <parsed response body. The parser is selected with Content-Type header. If no parser is found, will contain the raw response body>
+	response : <parsed response body. The parser is selected with Content-Type header. If no parser is found, will contain the raw response body>,
 	headers : <response headers>
 }
 ```
@@ -242,8 +242,9 @@ The callback function takes JacksResponse object as parameter witch contains
 The error function takes a JacksError as parameter with contains
 ```Javascript
 {
-	url : <url called>
-	type : <error type>
+     url : <url called>,
+     type : <error type>,
+     origin : <error origin (can be the xhr event or an exeption)>
 }
 ```
 Type will be 

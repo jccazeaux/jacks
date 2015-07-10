@@ -5,6 +5,8 @@ describe("Get", function() {
 		jacks().get(url).send(function(response) {
 			expect(response.response.data).toBe("foo");
 			done();
+		}, function(err) {
+			alert(JSON.stringify(err))
 		});
 	});
 });
