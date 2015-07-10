@@ -320,7 +320,7 @@ var jacks = (function () {
 						setTimeout(function() {
 							var err = new JacksError(xhr, that, mock.error);
 							triggerHook("beforeError", {request: that, error: err});
-							error && error(err, that);
+							error && error(err);
 						}, mock.delay||0);
 					}
 					
@@ -332,7 +332,7 @@ var jacks = (function () {
 						} catch(e) {
 							var err = new JacksError(xhr, that, "parsing", e);
 							triggerHook("beforeError", {request: that, error: err});
-							error && error(err, that);
+							error && error(err);
 						}
 					}, mock.delay||0);
 
@@ -372,11 +372,11 @@ var jacks = (function () {
 	   					if (that.aborted) {
 							var err = {type:"abort", url: that.url};
 							triggerHook("beforeError", {request: that, error: err});
-							return error(err, that);
+							return error(err);
 	   					} else if (that.timedout) {
 							var err = {type:"timeout", url: that.url};
 							triggerHook("beforeError", {request: that, error: err});
-							return error(err, that);
+							return error(err);
 	   					}
 	   					// else error, ignore statechange
 	   					return;
@@ -388,7 +388,7 @@ var jacks = (function () {
 	   				} catch(e) {
 	   					var err = new JacksError(xhr, that, "parsing", e);
 						triggerHook("beforeError", {request: that, error: err});
-						error && error(err, that);
+						error && error(err);
 					}
 				};
 				xhr.onerror = function(e) {
@@ -420,11 +420,11 @@ var jacks = (function () {
 	   					if (that.aborted) {
 							var err = {type:"abort", url: that.url};
 							triggerHook("beforeError", {request: that, error: err});
-							return error(err, that);
+							return error(err);
 	   					} else if (that.timedout) {
 							var err = {type:"timeout", url: that.url};
 							triggerHook("beforeError", {request: that, error: err});
-							return error(err, that);
+							return error(err);
 	   					}
 	   					// else error, ignore statechange
 	   					return;
@@ -436,13 +436,13 @@ var jacks = (function () {
 	   				} catch(e) {
 	   					var err = new JacksError(xhr, that, "parsing", e);
 						triggerHook("beforeError", {request: that, error: err});
-						error && error(err, that);
+						error && error(err);
 					}
 				};
 				xhr.onerror = function(e) {
 					var err = new JacksError(xhr, that, e.type, e);
 					triggerHook("beforeError", {request: that, error: err});
-					error(err, that);
+					error(err);
 				};
 				xhr.onprogress = function(e) {
 					emit("progress", e);
@@ -490,7 +490,7 @@ var jacks = (function () {
 	   				} catch(e) {
 	   					var err = new JacksError(xhr, that, "serializer", e);
 						triggerHook("beforeError", {request: that, error: err});
-						error && error(err, that);
+						error && error(err);
 					}
 				} else {
 					bodySerialized = body;
