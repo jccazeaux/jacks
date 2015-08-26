@@ -183,8 +183,6 @@ The plugin will be used for this request only.
 Register a callback for an event on the request.
 
 Available events
-* open : when the xmlHttpRequest is opened
-* send : when the xmlHttpRequest is sent
 * timeout : when the request has been aborted due to a timeout
 * abort : when the request has been aborted
 * loadstart : XMLHttpRequest loadstart event

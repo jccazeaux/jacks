@@ -116,8 +116,31 @@ describe("Mocks", function() {
 			expect(response.responseText).toBe("Mocked");
 			done();
 		});
-	})
+	});
 
-	
+	it("Gets headers from mock", function(done) {
+		jacks.clearMocks().mock({
+			url: url,
+			method: "get"
+		},
+		{
+			headers: {
+				"content-type": "application/json",
+				"Content-Type": "application/x-json",
+				"foo": "bar"
+			},
+			responseText: "Hello"
+		});
+		var request = jacks().get(url)
+		.send(function(response) {
+			expect(response.getHeader("content-type")).toBe("application/json, application/x-json");
+			expect(response.getHeader("foo")).toBe("bar");
+			expect(response.getHeader("FOO")).toBe("bar");
+
+			done();
+		});
+	});
+
+
 });
 

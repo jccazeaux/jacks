@@ -146,6 +146,7 @@ var jacks = (function () {
 				this.response = xhr.responseText;
 			}
 			this.headers = xhr.getAllResponseHeaders();
+			this.getHeader = xhr.getResponseHeader;
 		}
 
 		/**
@@ -304,22 +305,38 @@ var jacks = (function () {
 							return mock.headers;
 						},
 						getResponseHeader: function(name) {
-							return mock.headers ? mock.headers[name] : null;
+							var headersFound = [];
+							if (mock.headers) {
+								for (var headerName in mock.headers) {
+									console.log("***** " + headerName);
+									if (headerName.toLowerCase() === name.toLowerCase()) {
+										headersFound.push(mock.headers[headerName]);
+									}
+								}
+							}
+							return headersFound.join(", ");
 						},
 						status: mock.status,
 						statusText: mock.statusText
 					};
 					
-					emit("open");
 					if (mock.error) {
-						setTimeout(function() {
-							error(new JacksError(mock.error, that));	
-						}, mock.delay||0);
+						if (async) {
+							setTimeout(function() {
+								error(new JacksError(mock.error, that));	
+							}, mock.delay||0);							
+						} else {
+							error(new JacksError(mock.error, that));
+						}
 					}
 					
-					setTimeout(function() {
+					if (async) {
+						setTimeout(function() {
+							callback(new JacksResponse(xhr, that));	
+						}, mock.delay||0);							
+					} else {
 						callback(new JacksResponse(xhr, that));	
-					}, mock.delay||0);
+					}
 
 				};
 
@@ -344,7 +361,7 @@ var jacks = (function () {
 			function openXhr1(callback, error) {
 				var xhr = that.xhr;
 				// state change
-				xhr.onreadystatechange = function(){
+				xhr.onreadystatechange = function(e){
 					if (xhr.readyState != 4) return;
 
 					stopTimeout();
@@ -355,20 +372,21 @@ var jacks = (function () {
 	   				if (status === 0) {
 	   					// if request is aborted or timed out, then we launch error.
 	   					if (that.aborted) {
-	   						return error({type:"abort", url: that.url}, that);
+	   						if (error) return error({type:"abort", url: that.url}, that);
 	   					} else if (that.timedout) {
-	   						return error({type:"timeout", url: that.url}, that);
+	   						if (error) return error({type:"timeout", url: that.url}, that);
 	   					}
 	   					// else error, ignore statechange
 	   					return;
 	   				}
-					callback(new JacksResponse(xhr, that));
+	   				emit("load", e);
+					if (callback) callback(new JacksResponse(xhr, that));
 				};
 				xhr.onerror = function(e) {
-					error(new JacksError(e, that), that);
+	   				emit("error", e);
+					if (error) error(new JacksError(e, that), that);
 				};
 				xhr.open(requestType, that.url, async);
-				emit("open");
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
 				}
@@ -380,7 +398,7 @@ var jacks = (function () {
 			function openXhr2(callback, error) {
 				var xhr = that.xhr;
 		  		// state change
-				xhr.onload = function(){
+				xhr.onload = function(e){
 					stopTimeout();
 					// IE9 bug fix (status read if request aborted results in error...)
 					var status;
@@ -389,16 +407,18 @@ var jacks = (function () {
 	   				if (status === 0) {
 	   					// if request is aborted or timed out, then we launch error.
 	   					if (that.aborted) {
-	   						return error({type:"abort", url: that.url}, that);
+	   						if (error) return error({type:"abort", url: that.url}, that);
 	   					} else if (that.timedout) {
-	   						return error({type:"timeout", url: that.url}, that);
+	   						if (error) return error({type:"timeout", url: that.url}, that);
 	   					}
 	   					// else error, ignore statechange
 	   					return;
 	   				}
+	   				emit("load", e);
 					callback(new JacksResponse(xhr, that));
 				};
 				xhr.onerror = function(e) {
+	   				emit("error", e);
 					error(new JacksError(e, that), that);
 				};
 				xhr.onprogress = function(e) {
@@ -420,7 +440,6 @@ var jacks = (function () {
 					emit("upload-progress", e);
 				};
 				xhr.open(requestType, that.url, async);
-				emit("open");
 				for (var header in headers) {
 					xhr.setRequestHeader(header, headers[header]);
 				}
@@ -448,7 +467,6 @@ var jacks = (function () {
 				}
 
 				this.xhr.send(bodySerialized);
-				emit("send");
 				return this;
 			};
 
@@ -474,7 +492,6 @@ var jacks = (function () {
 				}
 
 				xhr.sendAsBinary(bodySerialized);
-				emit("send");
 				return this;
 			};
 
@@ -483,7 +500,6 @@ var jacks = (function () {
 			 */
 			this.abort = function() {
 				this.aborted = true;
-				emit("abort");
 				this.xhr.abort();
 				return this;
 			};
@@ -493,7 +509,6 @@ var jacks = (function () {
 			 */
 			this.timeout = function(delay) {
 				setTimeout(function() {
-					emit("timeout");
 					this.timedout = true;
 					this.xhr.abort();
 				}, delay);
