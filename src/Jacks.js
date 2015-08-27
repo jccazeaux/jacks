@@ -313,7 +313,6 @@ var jacks = (function () {
 							var headersFound = [];
 							if (mock.headers) {
 								for (var headerName in mock.headers) {
-									console.log("***** " + headerName);
 									if (headerName.toLowerCase() === name.toLowerCase()) {
 										headersFound.push(mock.headers[headerName]);
 									}
@@ -427,24 +426,6 @@ var jacks = (function () {
 		  		// state change
 				xhr.onload = function(e){
 					stopTimeout();
-					// IE9 bug fix (status read if request aborted results in error...)
-					var status;
-	   				try { status = xhr.status; } catch(e) { status = 0; }
-
-	   				if (status === 0) {
-	   					// if request is aborted or timed out, then we launch error.
-	   					if (that.aborted) {
-							var err = {type:"abort", url: that.url};
-							triggerHook("beforeError", {request: that, error: err});
-							if (error) return error(err);
-	   					} else if (that.timedout) {
-							var err = {type:"timeout", url: that.url};
-							triggerHook("beforeError", {request: that, error: err});
-							if (error) return error(err);
-	   					}
-	   					// else error, ignore statechange
-	   					return;
-	   				}
 
 	   				try {
 	   					var response = new JacksResponse(xhr, that);

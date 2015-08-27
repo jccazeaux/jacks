@@ -190,24 +190,6 @@ Available events
 * progress : XMLHttpRequest progress event
 * upload-progress : XMLHttpRequest upload progress event
 
-## jacksRequest.hook(&lt;String&gt; hookName, &lt;Function&gt; callback)
-Register a hook. A hook is for plugins to add features at every important state. The hooks receive a data object containing
-
-```javascript
-     {
-          request : JacksRequest object,
-          error: jacksError object,
-          response: jacksReponse object
-     }
-```
-
-Request is always available. Response and error are available only when error occured or response is available.
-
-Available hooks
-* beforeOpen : before the xmlHttpRequest is opened
-* beforeError : when the XMLHttpRequest threw an error, but just before the callback
-* beforeResponse : when the XMLHttpRequest response is available, but just before the callback
-
 ## jacksRequest.abort()
 Aborts the request.
 
@@ -232,7 +214,8 @@ The callback function takes JacksResponse object as parameter witch contains
 	statusText : <http status text>,
 	responseText : <raw response body>,
 	response : <parsed response body. The parser is selected with Content-Type header. If no parser is found, will contain the raw response body>,
-	headers : <response headers>
+	headers : <response headers>,
+     getHeader(name): <function to get one header. Delegates it to xhr>
 }
 ```
 
@@ -240,9 +223,8 @@ The callback function takes JacksResponse object as parameter witch contains
 The error function takes a JacksError as parameter with contains
 ```Javascript
 {
-     url : <url called>,
-     type : <error type>,
-     origin : <error origin (can be the xhr event or an exeption)>
+	url : <url called>
+	type : <error type>
 }
 ```
 Type will be 
