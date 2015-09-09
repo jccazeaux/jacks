@@ -336,11 +336,11 @@ var jacks = (function () {
 							try {
 				   				var response = new JacksResponse(xhr, that);
 								triggerHook("beforeResponse", {request: that, response: response});
-								callback && callback(response);
+								if (callback) callback(response);
 							} catch(e) {
 								var err = new JacksError(xhr, that, "parsing", e);
 								triggerHook("beforeError", {request: that, error: err});
-								error && error(err);
+								if (error) error(err);
 							}
 						};
 					}
@@ -626,7 +626,7 @@ var jacks = (function () {
 						sameUrl = (mock.request.url === that.url);
 					}
 					if (sameUrl && (!mock.request.method || mock.request.method.toUpperCase() === that.requestType.toUpperCase())) {
-						return mock.response;
+						return Object.create(mock.response);
 					}
 				}
 			}

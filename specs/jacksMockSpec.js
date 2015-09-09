@@ -141,6 +141,30 @@ describe("Mocks", function() {
 		});
 	});
 
+	it("Clones the mock", function(done) {
+		jacks.clearMocks().mock({
+			url: url,
+			method: "get"
+		},
+		{
+			response: function() {
+				if (!this.responseText) {
+					this.responseText = "";	
+				}
+				this.responseText += "Mocked";
+			}
+		});
+		jacks().get(url)
+		.send(function(response) {
+			expect(response.responseText).toBe("Mocked");
+		});
+		jacks().get(url)
+		.send(function(response) {
+			expect(response.responseText).toBe("Mocked");
+			done();
+		});
+	});
+
 
 });
 
