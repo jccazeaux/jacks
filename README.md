@@ -16,8 +16,8 @@ jacks().get("http://my.api/todos")
 POST 
 ```Javascript
 jacks().post("http://my.api/todos")
-     .body({"title", "Finish the job", 
-	    "date", "2015/12/31"})
+     .body({"title": "Finish the job", 
+	    "date": "2015/12/31"})
      .header("Content-Type", "application/json")
      .send(function(jacksResponse) {
      	// Callback success
