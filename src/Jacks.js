@@ -667,4 +667,4 @@ var jacks = (function () {
 	return exports;
 })();
 
-window.jacks = jacks;
+module.exports = jacks;
