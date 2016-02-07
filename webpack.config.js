@@ -1,4 +1,12 @@
 var webpack = require('webpack');
+var fs = require('fs');
+
+var file = fs.readFileSync('./package.json', 'utf8');
+var VERSION = JSON.parse(file).version;
+var BANNER = 'Jacks - ' + VERSION +
+  ' https://github.com/jccazeaux/Jacks\n' +
+  ' Copyright (c) 2015 Jean-Christophe Cazeaux.\n' +
+  ' Licensed under the MIT license.\n';
 
 module.exports = {
   context: __dirname,
@@ -15,10 +23,11 @@ module.exports = {
   },
   
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
+   new webpack.optimize.UglifyJsPlugin({
       include: /\.min\.js$/,
       minimize: true
-    })
+    }),
+    new webpack.BannerPlugin(BANNER)
   ],
 
   module: {
