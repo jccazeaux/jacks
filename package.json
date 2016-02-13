@@ -13,6 +13,6 @@
   },
   "scripts": {
     "build": "webpack",
-    "test": "sudo grunt connect mocha_phantomjs"
+    "test": "grunt connect mocha_phantomjs"
   }
 }
