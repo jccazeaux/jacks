@@ -3,7 +3,7 @@ var fs = require('fs');
 
 var file = fs.readFileSync('./package.json', 'utf8');
 var VERSION = JSON.parse(file).version;
-var BANNER = 'Jacks - ' + VERSION +
+var BANNER = 'jacks-js - ' + VERSION +
   ' https://github.com/jccazeaux/Jacks\n' +
   ' Copyright (c) 2015 Jean-Christophe Cazeaux.\n' +
   ' Licensed under the MIT license.\n';
@@ -11,8 +11,8 @@ var BANNER = 'Jacks - ' + VERSION +
 module.exports = {
   context: __dirname,
   entry: {
-  	'jacks': './src/Jacks',
-  	'jacks.min': './src/Jacks'
+  	'jacks': './src/jacks',
+  	'jacks.min': './src/jacks'
   },
 
   output: {
