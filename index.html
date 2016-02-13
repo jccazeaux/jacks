@@ -31,7 +31,9 @@
         <hr>
 
         <section id="main_content">
-          <h1>
+          <p><img src="https://travis-ci.org/jccazeaux/Jacks.svg?branch=master" alt="Travis CI"></p>
+
+<h1>
 <a id="jacks" class="anchor" href="#jacks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jacks</h1>
 
 <p>Fluent extensible ajax framework.</p>
@@ -58,6 +60,15 @@
      }, <span class="pl-k">function</span>(<span class="pl-smi">jacksError</span>) {
         <span class="pl-c">// Callback error</span>
      });</pre></div>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
+
+<ul>
+<li>Download the <a href="https://github.com/jccazeaux/jacks/releases/download/v0.2.1/jacks.min.js">latest release</a>.</li>
+<li>Clone the repo: git clone <a href="https://github.com/jccazeaux/jacks.git">https://github.com/jccazeaux/jacks.git</a>.</li>
+<li>Install with npm: <code>npm install jacks-js</code>.</li>
+</ul>
 
 <h1>
 <a id="main-api" class="anchor" href="#main-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Main API</h1>
@@ -293,7 +304,6 @@
 <p>The callback function takes JacksResponse object as parameter witch contains</p>
 
 <div class="highlight highlight-source-js"><pre>{
-    url <span class="pl-k">:</span> <span class="pl-k">&lt;</span>url called<span class="pl-k">&gt;</span>
     status <span class="pl-k">:</span> <span class="pl-k">&lt;</span>http status code<span class="pl-k">&gt;</span>,
     statusText <span class="pl-k">:</span> <span class="pl-k">&lt;</span>http status text<span class="pl-k">&gt;</span>,
     responseText <span class="pl-k">:</span> <span class="pl-k">&lt;</span>raw response body<span class="pl-k">&gt;</span>,
