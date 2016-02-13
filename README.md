@@ -28,6 +28,13 @@ jacks().post("http://my.api/todos")
      });
 ```
 
+# Installation
+
+* Download the [latest release](https://github.com/jccazeaux/jacks/releases/download/v0.2.1/jacks.min.js).
+* Clone the repo: git clone https://github.com/jccazeaux/jacks.git.
+* Install with npm: npm install jacks-js.
+
+
 # Main API
 ## jacks()
 This creates a new instance of jacks. This instance will be an empty shell and the base to create requests. Each instance will have its own configuration (see plugins and use). So you can have many instances of jacks, each using different sorts of configuration. In your application you should keep the instances in a context to avoid a recreation each time you need it.
