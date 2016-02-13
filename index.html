@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Jacks by jccazeaux</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jacks</h1>
+        <h2>Fluent ajax framework</h2>
+        <a href="https://github.com/jccazeaux/Jacks" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="jacks" class="anchor" href="#jacks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jacks</h1>
+
+<p>Fluent extensible ajax framework.</p>
+
+<p>GET <a href="http://my.api/todos?limit=50">http://my.api/todos?limit=50</a></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">"</span>http://my.api/todos<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">query</span>(<span class="pl-s"><span class="pl-pds">"</span>limit<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>50<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">header</span>(<span class="pl-s"><span class="pl-pds">"</span>Accepts<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>application/json<span class="pl-pds">"</span></span>)
+     .<span class="pl-c1">send</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksResponse</span>) {
+        <span class="pl-c">// Callback success</span>
+     }, <span class="pl-k">function</span>(<span class="pl-smi">jacksError</span>) {
+        <span class="pl-c">// Callback error</span>
+     });</pre></div>
+
+<p>POST </p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">post</span>(<span class="pl-s"><span class="pl-pds">"</span>http://my.api/todos<span class="pl-pds">"</span></span>)
+     .<span class="pl-c1">body</span>({<span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Finish the job<span class="pl-pds">"</span></span>, 
+        <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>2015/12/31<span class="pl-pds">"</span></span>})
+     .<span class="pl-en">header</span>(<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>application/json<span class="pl-pds">"</span></span>)
+     .<span class="pl-c1">send</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksResponse</span>) {
+        <span class="pl-c">// Callback success</span>
+     }, <span class="pl-k">function</span>(<span class="pl-smi">jacksError</span>) {
+        <span class="pl-c">// Callback error</span>
+     });</pre></div>
+
+<h1>
+<a id="main-api" class="anchor" href="#main-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Main API</h1>
+
+<h2>
+<a id="jacks-1" class="anchor" href="#jacks-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks()</h2>
+
+<p>This creates a new instance of jacks. This instance will be an empty shell and the base to create requests. Each instance will have its own configuration (see plugins and use). So you can have many instances of jacks, each using different sorts of configuration. In your application you should keep the instances in a context to avoid a recreation each time you need it.</p>
+
+<p>A jacks instance is only the beginning, to start a request use the methods described below.</p>
+
+<h2>
+<a id="jacksgetstring-url" class="anchor" href="#jacksgetstring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().get(&lt;String&gt; url)</h2>
+
+<p>Creates a GET JacksRequest with the url</p>
+
+<h2>
+<a id="jackspoststring-url" class="anchor" href="#jackspoststring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().post(&lt;String&gt; url)</h2>
+
+<p>Creates a POST JacksRequest with the url</p>
+
+<h2>
+<a id="jacksputstring-url" class="anchor" href="#jacksputstring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().put(&lt;String&gt; url)</h2>
+
+<p>Creates a PUT JacksRequest with the url</p>
+
+<h2>
+<a id="jacksdeletestring-url" class="anchor" href="#jacksdeletestring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().delete(&lt;String&gt; url)</h2>
+
+<p>Creates a DELETE JacksRequest with the url</p>
+
+<h2>
+<a id="jacksoptionsstring-url" class="anchor" href="#jacksoptionsstring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().options(&lt;String&gt; url)</h2>
+
+<p>Creates a OPTIONS JacksRequest with the url</p>
+
+<h2>
+<a id="jacksheadstring-url" class="anchor" href="#jacksheadstring-url" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks().head(&lt;String&gt; url)</h2>
+
+<p>Creates a HEAD JacksRequest with the url</p>
+
+<h2>
+<a id="jackspluginstring-pluginname-function-pluginfn" class="anchor" href="#jackspluginstring-pluginname-function-pluginfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks.plugin(&lt;String&gt; pluginName, &lt;Function&gt; pluginFn)</h2>
+
+<p>You can add a plugin to jacks using the plugin() function on jacks (not on request)</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">jacks</span>.<span class="pl-en">plugin</span>(<span class="pl-s"><span class="pl-pds">"</span>pluginName<span class="pl-pds">"</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">jacksRequest</span>) {
+    <span class="pl-c">// Access to all request methods</span>
+});</pre></div>
+
+<p>A plugin is a function wich receives the request as parameter.</p>
+
+<h2>
+<a id="jacksusestring-pluginname--usefunction-pluginfn" class="anchor" href="#jacksusestring-pluginname--usefunction-pluginfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacks.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)</h2>
+
+<p>Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">use</span>(<span class="pl-s"><span class="pl-pds">"</span>myPlugin<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">use</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksRequest</span>) {
+    <span class="pl-c">// Plugin code</span>
+     })</pre></div>
+
+<p>This plugin will be used for all requests.</p>
+
+<h2>
+<a id="mocks" class="anchor" href="#mocks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mocks</h2>
+
+<p>Jacks comes with a mock API.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">jacks</span>.<span class="pl-en">mock</span>(request, response);</pre></div>
+
+<h3>
+<a id="request" class="anchor" href="#request" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>request</h3>
+
+<p>Request defines wich requests are mocked. It contains two attributes</p>
+
+<ul>
+<li>url : url of mocked resource. Can be a String or a regular expression</li>
+<li>method : mocked method. If not specifed, all methods will be mocked</li>
+</ul>
+
+<h3>
+<a id="response" class="anchor" href="#response" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>response</h3>
+
+<p>Mocked response to send</p>
+
+<ul>
+<li>responseText : Text of the response</li>
+<li>response : function callback to create a dynamic responseText. The function takes as only parameter a "done" callback. Use it if your callback is asynchronous.</li>
+<li>headers : response headers</li>
+<li>status : status code</li>
+<li>statusText : status text</li>
+<li>error : mock an error</li>
+<li>delay : simulates a delayed response. In ms.</li>
+</ul>
+
+<h3>
+<a id="exemples" class="anchor" href="#exemples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exemples</h3>
+
+<h4>
+<a id="basic-mock" class="anchor" href="#basic-mock" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic mock</h4>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">jacks</span>.<span class="pl-en">mock</span>({
+     url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>/myurl<span class="pl-pds">"</span></span>
+}, {
+     responseText<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>My mocked response<span class="pl-pds">"</span></span>,
+     headers<span class="pl-k">:</span> {<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>plain/text<span class="pl-pds">"</span></span>}
+});</pre></div>
+
+<h4>
+<a id="dynamic-mock" class="anchor" href="#dynamic-mock" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dynamic mock</h4>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">jacks</span>.<span class="pl-en">mock</span>({
+     url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>/myurl<span class="pl-pds">"</span></span>
+}, {
+     <span class="pl-en">response</span><span class="pl-k">:</span> <span class="pl-k">function</span>() {
+          <span class="pl-v">this</span>.<span class="pl-smi">responseText</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>My dynamic mock<span class="pl-pds">"</span></span>;
+     },
+     headers<span class="pl-k">:</span> {<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>plain/text<span class="pl-pds">"</span></span>}
+});</pre></div>
+
+<h4>
+<a id="asynchronous-dynamic-mock" class="anchor" href="#asynchronous-dynamic-mock" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Asynchronous dynamic mock</h4>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">jacks</span>.<span class="pl-en">mock</span>({
+     url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>/myurl<span class="pl-pds">"</span></span>
+}, {
+     <span class="pl-en">response</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">done</span>) {
+          <span class="pl-k">var</span> that <span class="pl-k">=</span> <span class="pl-v">this</span>;
+          <span class="pl-c1">setTimeout</span>(<span class="pl-k">function</span>() {
+               <span class="pl-smi">that</span>.<span class="pl-smi">responseText</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>My dynamic mock<span class="pl-pds">"</span></span>;
+               <span class="pl-en">done</span>();
+          }, <span class="pl-c1">0</span>);
+     },
+     headers<span class="pl-k">:</span> {<span class="pl-s"><span class="pl-pds">"</span>Content-Type<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>plain/text<span class="pl-pds">"</span></span>}
+});</pre></div>
+
+<h1>
+<a id="jacksrequest-api" class="anchor" href="#jacksrequest-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>JacksRequest API</h1>
+
+<h2>
+<a id="jacksrequestbodyobject-data" class="anchor" href="#jacksrequestbodyobject-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.body(&lt;Object&gt; data)</h2>
+
+<p>Sets the body. Only for POST and PUT</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">post</span>(<span class="pl-s"><span class="pl-pds">"</span>http://myurl<span class="pl-pds">"</span></span>)
+     .<span class="pl-c1">body</span>({<span class="pl-s"><span class="pl-pds">"</span>age<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">35</span>, <span class="pl-s"><span class="pl-pds">"</span>city<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Bordeaux<span class="pl-pds">"</span></span>})
+     .<span class="pl-c1">send</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksReponse</span>) {
+        <span class="pl-c">// Callback success</span>
+     }, <span class="pl-k">function</span>(<span class="pl-smi">jacksError</span>) {
+        <span class="pl-c">// Callback error</span>
+     });</pre></div>
+
+<h2>
+<a id="jacksrequestquerystring-name-string-value--queryobject-params" class="anchor" href="#jacksrequestquerystring-name-string-value--queryobject-params" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.query(&lt;String&gt; name, &lt;String&gt; value) | query(&lt;Object&gt; params)</h2>
+
+<p>Add query parameters. Will concatenate the query parameters to the URL.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">"</span>http://myurl<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">query</span>(<span class="pl-s"><span class="pl-pds">"</span>age<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>35<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">query</span>({<span class="pl-s"><span class="pl-pds">"</span>age<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-c1">35</span>, <span class="pl-s"><span class="pl-pds">"</span>city<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>Bordeaux<span class="pl-pds">"</span></span>})
+     .<span class="pl-c1">send</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksReponse</span>) {
+        <span class="pl-c">// Callback success</span>
+     }, <span class="pl-k">function</span>(<span class="pl-smi">jacksError</span>) {
+        <span class="pl-c">// Callback error</span>
+     });</pre></div>
+
+<h2>
+<a id="jacksrequestheaderstring-name-string-value" class="anchor" href="#jacksrequestheaderstring-name-string-value" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.header(&lt;String&gt; name, &lt;String&gt; value)</h2>
+
+<p>Add a request header.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">"</span>http://myurl<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">header</span>(<span class="pl-s"><span class="pl-pds">"</span>X-MY-HEADER<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>)</pre></div>
+
+<h2>
+<a id="jacksrequestusestring-pluginname--usefunction-pluginfn" class="anchor" href="#jacksrequestusestring-pluginname--usefunction-pluginfn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.use(&lt;String&gt; pluginName) | use(&lt;Function&gt; pluginFn)</h2>
+
+<p>Use a plugin. Parameter can be the name of a declared plugin or a function for a live plugin</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">jacks</span>().<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">"</span>http://myurl<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">use</span>(<span class="pl-s"><span class="pl-pds">"</span>myPlugin<span class="pl-pds">"</span></span>)
+     .<span class="pl-en">use</span>(<span class="pl-k">function</span>(<span class="pl-smi">jacksRequest</span>) {
+    <span class="pl-c">// Plugin code</span>
+     })</pre></div>
+
+<p>The plugin will be used for this request only.</p>
+
+<h2>
+<a id="jacksrequestonstring-eventname-function-callback" class="anchor" href="#jacksrequestonstring-eventname-function-callback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.on(&lt;String&gt; eventName, &lt;Function&gt; callback)</h2>
+
+<p>Register a callback for an event on the request.</p>
+
+<p>Available events</p>
+
+<ul>
+<li>timeout : when the request has been aborted due to a timeout</li>
+<li>abort : when the request has been aborted</li>
+<li>loadstart : XMLHttpRequest loadstart event</li>
+<li>loadend : XMLHttpRequest loadend event</li>
+<li>progress : XMLHttpRequest progress event</li>
+<li>upload-progress : XMLHttpRequest upload progress event</li>
+</ul>
+
+<h2>
+<a id="jacksrequestabort" class="anchor" href="#jacksrequestabort" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.abort()</h2>
+
+<p>Aborts the request.</p>
+
+<h2>
+<a id="jacksrequestsync" class="anchor" href="#jacksrequestsync" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.sync()</h2>
+
+<p>Switches the request to synchronous mode. By default it's asynchronous.</p>
+
+<h2>
+<a id="jacksrequesttimeoutint-delay" class="anchor" href="#jacksrequesttimeoutint-delay" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.timeout(&lt;int&gt; delay)</h2>
+
+<p>Defines a timeout for the request. After the delay (in ms) the request will be aborted.</p>
+
+<h2>
+<a id="jacksrequestsendfunction-callback-function-error" class="anchor" href="#jacksrequestsendfunction-callback-function-error" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.send(&lt;Function&gt; callback, &lt;function&gt; error)</h2>
+
+<p>Sends the request.</p>
+
+<h2>
+<a id="jacksrequestsendasbinaryfunction-callback-function-error" class="anchor" href="#jacksrequestsendasbinaryfunction-callback-function-error" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jacksRequest.sendAsBinary(&lt;Function&gt; callback, &lt;function&gt; error)</h2>
+
+<p>Sends the request as binary.</p>
+
+<h3>
+<a id="callback" class="anchor" href="#callback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>callback</h3>
+
+<p>The callback function takes JacksResponse object as parameter witch contains</p>
+
+<div class="highlight highlight-source-js"><pre>{
+    url <span class="pl-k">:</span> <span class="pl-k">&lt;</span>url called<span class="pl-k">&gt;</span>
+    status <span class="pl-k">:</span> <span class="pl-k">&lt;</span>http status code<span class="pl-k">&gt;</span>,
+    statusText <span class="pl-k">:</span> <span class="pl-k">&lt;</span>http status text<span class="pl-k">&gt;</span>,
+    responseText <span class="pl-k">:</span> <span class="pl-k">&lt;</span>raw response body<span class="pl-k">&gt;</span>,
+    response <span class="pl-k">:</span> <span class="pl-k">&lt;</span>parsed response <span class="pl-smi">body</span>. <span class="pl-smi">The</span> parser is selected <span class="pl-k">with</span> Content<span class="pl-k">-</span>Type <span class="pl-smi">header</span>. <span class="pl-smi">If</span> no parser is found, will contain the raw response body<span class="pl-k">&gt;</span>,
+    headers <span class="pl-k">:</span> <span class="pl-k">&lt;</span>response headers<span class="pl-k">&gt;</span>,
+     <span class="pl-en">getHeader</span>(name)<span class="pl-k">:</span> <span class="pl-k">&lt;</span><span class="pl-k">function</span> to get one <span class="pl-smi">header</span>. <span class="pl-smi">Delegates</span> it to xhr<span class="pl-k">&gt;</span>
+}</pre></div>
+
+<h3>
+<a id="error" class="anchor" href="#error" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>error</h3>
+
+<p>The error function takes a JacksError as parameter with contains</p>
+
+<div class="highlight highlight-source-js"><pre>{
+    url <span class="pl-k">:</span> <span class="pl-k">&lt;</span>url called<span class="pl-k">&gt;</span>
+    type <span class="pl-k">:</span> <span class="pl-k">&lt;</span>error type<span class="pl-k">&gt;</span>
+}</pre></div>
+
+<p>Type will be </p>
+
+<ul>
+<li>"timeout" if request has been interrupted after a timeout</li>
+<li>"abort" if request has been aborted</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/jccazeaux/Jacks/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/jccazeaux/Jacks/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/jccazeaux/Jacks"></a> is maintained by <a href="https://github.com/jccazeaux">jccazeaux</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
