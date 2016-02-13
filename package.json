@@ -9,7 +9,7 @@
     "sinon": "^1.17.3",
     "babel-core": "^6.4.5",
     "babel-loader": "^6.2.2",
-    "mocha-phantomjs": "^4.0.2"
+    "grunt-mocha-phantomjs": "^3.0.0"
   },
   "scripts": {
     "build": "webpack",
