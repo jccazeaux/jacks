@@ -32,7 +32,7 @@ jacks().post("http://my.api/todos")
 
 * Download the [latest release](https://github.com/jccazeaux/jacks/releases/download/v0.2.1/jacks.min.js).
 * Clone the repo: git clone https://github.com/jccazeaux/jacks.git.
-* Install with npm: npm install jacks-js.
+* Install with npm: `npm install jacks-js`.
 
 
 # Main API
