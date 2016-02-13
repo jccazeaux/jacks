@@ -1,5 +1,5 @@
-var url = "./specs/foo.json";
 describe("Mocks", function() {
+	var url = "./foo.json";
 
 	it("Mocks a get", function(done) {
 		jacks.clearMocks().mock({
@@ -11,14 +11,14 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Hello");
+			Should(response.responseText).be.exactly("Hello");
 			done();
 		});
 	});
 
 	it("Mocks a get with regexp", function(done) {
 		jacks.clearMocks().mock({
-			url: /.*specs.*/,
+			url: /.*foo.*/,
 			method: "get"
 		},
 		{
@@ -26,7 +26,7 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Hello");
+			Should(response.responseText).be.exactly("Hello");
 			done();
 		});
 	});
@@ -41,7 +41,7 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url + "?dummy")
 		.send(function(response) {
-			expect(response.responseText).not.toBe("Hello");
+			Should(response.responseText).not.be.exactly("Hello");
 			done();
 		});
 	});
@@ -56,7 +56,7 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).not.toBe("Mocked");
+			Should(response.responseText).not.be.exactly("Mocked");
 			done();
 		});
 	});
@@ -74,8 +74,8 @@ describe("Mocks", function() {
 		var request = jacks().get(url)
 		.send(function(response) {
 			var end = new Date();
-			expect(response.responseText).toBe("Mocked");
-			expect(end.getTime() - start.getTime() >= 1000).toBe(true);
+			Should(response.responseText).be.exactly("Mocked");
+			Should(end.getTime() - start.getTime() >= 1000).be.exactly(true);
 			done();
 		});
 	});
@@ -92,7 +92,7 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Mocked");
+			Should(response.responseText).be.exactly("Mocked");
 			done();
 		});
 	});
@@ -113,7 +113,7 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Mocked");
+			Should(response.responseText).be.exactly("Mocked");
 			done();
 		});
 	});
@@ -133,9 +133,9 @@ describe("Mocks", function() {
 		});
 		var request = jacks().get(url)
 		.send(function(response) {
-			expect(response.getHeader("content-type")).toBe("application/json, application/x-json");
-			expect(response.getHeader("foo")).toBe("bar");
-			expect(response.getHeader("FOO")).toBe("bar");
+			Should(response.getHeader("content-type")).be.exactly("application/json, application/x-json");
+			Should(response.getHeader("foo")).be.exactly("bar");
+			Should(response.getHeader("FOO")).be.exactly("bar");
 
 			done();
 		});
@@ -156,11 +156,11 @@ describe("Mocks", function() {
 		});
 		jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Mocked");
+			Should(response.responseText).be.exactly("Mocked");
 		});
 		jacks().get(url)
 		.send(function(response) {
-			expect(response.responseText).toBe("Mocked");
+			Should(response.responseText).be.exactly("Mocked");
 			done();
 		});
 	});

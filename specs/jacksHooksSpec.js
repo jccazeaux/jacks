@@ -1,25 +1,26 @@
-describe("Events", function() {
+describe("Hooks", function() {
+	var url = "/dump"
 	it("hooks before open", function(done) {
 		jacks()
 			.get(url)
 			.hook('beforeOpen', function(data) {
-				expect(data.request).not.toBe(null);
+				Should(data.request).not.be.eql(null);
 				data.request.query("hook", "hook");
 			})
 			.send(function(response) {
-				var query = response.url.substring(response.url.indexOf("?"));
-				expect(query).toBe("?hook=hook");
+				var query = response.response.url.substring(response.response.url.indexOf("?"));
+				Should(query).be.exactly("?hook=hook");
 				done();
 			});
 	});
 	it("hooks before error", function(done) {
 		jacks()
-			.get("htp://error")
+			.get("http://local:33/error")
 			.hook('beforeError', function(data) {
 				data.error.hook = "hook";
 			})
 			.send(null, function(err) {
-				expect(err.hook).toBe("hook");
+				Should(err.hook).be.exactly("hook");
 				done();
 			});
 	});
@@ -30,7 +31,7 @@ describe("Events", function() {
 				data.response.hook = "hook";
 			})
 			.send(function(response) {
-				expect(response.hook).toBe("hook");
+				Should(response.hook).be.exactly("hook");
 				done();
 			});
 	});

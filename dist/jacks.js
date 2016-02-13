@@ -1,3 +1,9 @@
+/*!
+ * Jacks - 0.1.0 https://github.com/jccazeaux/Jacks
+ *  Copyright (c) 2015 Jean-Christophe Cazeaux.
+ *  Licensed under the MIT license.
+ * 
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -203,7 +209,9 @@ return /******/ (function(modules) { // webpackBootstrap
 					this.response = xhr.responseText;
 				}
 				this.headers = xhr.getAllResponseHeaders();
-				this.getHeader = xhr.getResponseHeader;
+				this.getHeader = function (header) {
+					return xhr.getResponseHeader(header);
+				};
 			}
 
 			/**
@@ -502,6 +510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						}
 					};
 					xhr.onerror = function (e) {
+						console.log("cocuou")
 						var err = new JacksError(xhr, that, e.type, e);
 						triggerHook("beforeError", { request: that, error: err });
 						error(err);
@@ -550,7 +559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						try {
 							bodySerialized = serialize(body, headers["Content-Type"]);
 						} catch (e) {
-							var err = new JacksError(xhr, that, "serializer", e);
+							var err = new JacksError(this.xhr, that, "serializer", e);
 							triggerHook("beforeError", { request: that, error: err });
 							error && error(err);
 						}
@@ -730,7 +739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return exports;
 	}();
 
-	window.jacks = jacks;
+	module.exports = jacks;
 
 /***/ }
 /******/ ])

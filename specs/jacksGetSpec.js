@@ -1,17 +1,16 @@
-var url = "./specs/foo.json";
-
 describe("Get", function() {
+	var url = "./foo.json";
+
 	it("Gets the URL", function(done) {
 		jacks().get(url).send(function(response) {
-			expect(response.response.data).toBe("foo");
+			Should(response.response.data).be.exactly("foo");
 			done();
-		}, function(err) {
-			alert(JSON.stringify(err))
 		});
 	});
 });
 
 describe("Parsers", function() {
+	var url = "./foo.json";
 	it("Uses the defined parser", function(done) {
 		jacks()
 		.parser("application/json", function(data) {
@@ -20,7 +19,7 @@ describe("Parsers", function() {
 			return dataParsed;
 		})
 		.get(url).send(function(response) {
-			expect(response.response.foo).toBe("bar");
+			Should(response.response.foo).be.exactly("bar");
 			done();
 		});
 	});

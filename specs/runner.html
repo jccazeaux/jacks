@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mocha Test Runner</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+  </head>
+
+  <body>
+    <div id="mocha"></div>
+
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/should/should.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
+    <script src="../dist/jacks.js"></script>
+
+    <script>mocha.setup('bdd')</script>
+
+    <script src="jacksSpec.js"></script>
+    <script src="jacksGetSpec.js"></script>
+    <script src="jacksEventsSpec.js"></script>
+    <script src="jacksMockSpec.js"></script>
+    <script src="jacksPluginSpec.js"></script>
+    <script src="jacksPostSpec.js"></script>
+    <script src="jacksHooksSpec.js"></script>
+
+    <script>
+      if (window.mochaPhantomJS) {
+        mochaPhantomJS.run();
+      } else {
+        mocha.run();
+      }
+    </script>
+  </body>
+</html>

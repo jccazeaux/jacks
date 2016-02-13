@@ -1,7 +1,6 @@
-var url = "./specs/foo.json";
 
 describe("Plugins", function() {
-
+	var url = "/dump";
 	it("Uses a live plugin on request", function(done) {
 
 		function notVader(jacksRequest) {
@@ -12,8 +11,8 @@ describe("Plugins", function() {
 		.query("param1", "value")
 		.use(notVader)
 		.send(function(response) {
-			var query = response.url.substring(response.url.indexOf("?"));
-			expect(query).toBe("?param1=value&iAmNot=Vader");
+			var query = response.response.url.substring(response.response.url.indexOf("?"));
+			Should(query).be.exactly("?param1=value&iAmNot=Vader");
 			done();
 		});
 	});
@@ -29,15 +28,15 @@ describe("Plugins", function() {
 		.get(url)
 		.query("param1", "value")
 		.send(function(response) {
-			var query = response.url.substring(response.url.indexOf("?"));
-			expect(query).toBe("?iAm=Yoda&param1=value");
+			var query = response.response.url.substring(response.response.url.indexOf("?"));
+			Should(query).be.exactly("?iAm=Yoda&param1=value");
 			// Try again to that the plugin is still there
 			myJacks
 			.get(url)
 			.query("param1", "value")
 			.send(function(response) {
-				var query = response.url.substring(response.url.indexOf("?"));
-				expect(query).toBe("?iAm=Yoda&param1=value");
+				var query = response.response.url.substring(response.response.url.indexOf("?"));
+				Should(query).be.exactly("?iAm=Yoda&param1=value");
 				done();
 			});
 		});
@@ -55,8 +54,8 @@ describe("Plugins", function() {
 		.query("param1", "value")
 		.use("notVader")
 		.send(function(response) {
-			var query = response.url.substring(response.url.indexOf("?"));
-			expect(query).toBe("?param1=value&iAmNot=Vader")
+			var query = response.response.url.substring(response.response.url.indexOf("?"));
+			Should(query).be.exactly("?param1=value&iAmNot=Vader")
 			done();
 		});
 	});
@@ -74,16 +73,16 @@ describe("Plugins", function() {
 		.get(url)
 		.query("param1", "value")
 		.send(function(response) {
-			var query = response.url.substring(response.url.indexOf("?"));
-			expect(query).toBe("?iAm=Yoda&param1=value")
+			var query = response.response.url.substring(response.response.url.indexOf("?"));
+			Should(query).be.exactly("?iAm=Yoda&param1=value")
 		
 			myJacks
 			.get(url)
 			.query("param1", "value")
 			.send(function(response) {
 				// Try again to that the plugin is still there
-				var query = response.url.substring(response.url.indexOf("?"));
-				expect(query).toBe("?iAm=Yoda&param1=value")
+				var query = response.response.url.substring(response.response.url.indexOf("?"));
+				Should(query).be.exactly("?iAm=Yoda&param1=value")
 				done();
 			});
 		});

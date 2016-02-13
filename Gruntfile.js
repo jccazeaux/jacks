@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
-          keepalive: true,
+          keepalive: false,
           port: 9000,
           base: './',
           middleware: function (connect, options, middlewares) {
@@ -20,19 +20,39 @@ module.exports = function(grunt) {
                   return res.end(fs.readFileSync(filepath));
                 }
               }
-
               return next();
+            });
+            middlewares.unshift(function (req, res, next) {
+              // Get returns request info in response
+              if (/dump[.]*/.test(req.url)) {
+                var result = {
+                  headers: req.headers,
+                  url: req.url
+                };
+                res.setHeader("Content-Type", "application/json")
+                return res.end(JSON.stringify(result));
+              } else {
+                return next();
+              }
             });
 
             return middlewares;
           }
         }
       }
+    },
+    mocha_phantomjs: {
+      all: {
+        options: {
+          urls: ['http://localhost:9000/specs/runner.html']
+        }
+      }
     }
-  });
+});
+
 
   grunt.loadNpmTasks('grunt-contrib-connect');
-  
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
   grunt.registerTask('default', ['connect']);
   
 };

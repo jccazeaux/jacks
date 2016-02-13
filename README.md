@@ -211,7 +211,6 @@ Sends the request as binary.
 The callback function takes JacksResponse object as parameter witch contains
 ```Javascript
 {
-	url : <url called>
 	status : <http status code>,
 	statusText : <http status text>,
 	responseText : <raw response body>,

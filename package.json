@@ -5,10 +5,14 @@
     "grunt": "~0.4.2",
     "grunt-contrib-connect": "^0.7.1",
     "webpack": "^1.12.13",
+    "should": "^8.2.1",
+    "sinon": "^1.17.3",
     "babel-core": "^6.4.5",
-    "babel-loader": "^6.2.2"
+    "babel-loader": "^6.2.2",
+    "mocha-phantomjs": "^4.0.2"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "test": "grunt connect mocha_phantomjs"
   }
 }

@@ -149,7 +149,9 @@ var jacks = (function () {
 				this.response = xhr.responseText;
 			}
 			this.headers = xhr.getAllResponseHeaders();
-			this.getHeader = xhr.getResponseHeader;
+			this.getHeader = function(header) {
+				return xhr.getResponseHeader(header);
+			};
 		}
 
 		/**
@@ -486,7 +488,7 @@ var jacks = (function () {
 	   				try {
 						bodySerialized = serialize(body, headers["Content-Type"]);
 	   				} catch(e) {
-	   					var err = new JacksError(xhr, that, "serializer", e);
+	   					var err = new JacksError(this.xhr, that, "serializer", e);
 						triggerHook("beforeError", {request: that, error: err});
 						error && error(err);
 					}

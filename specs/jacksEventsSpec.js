@@ -1,4 +1,6 @@
 describe("Events", function() {
+	var url = "./foo.json";
+	
 	it("loadstarts", function(done) {
 		var eventCheck = false;
 		jacks()
@@ -7,7 +9,7 @@ describe("Events", function() {
 				eventCheck = true;
 			})
 			.send(function(response) {
-				expect(eventCheck).toBe(true);
+				Should(eventCheck).be.exactly(true);
 				done();
 			});
 	});
@@ -17,7 +19,7 @@ describe("Events", function() {
 			.get(url)
 			.on('loadend', function(e) {
 				eventCheck = true;
-				expect(eventCheck).toBe(true);
+				Should(eventCheck).be.exactly(true);
 				done();
 			})
 			.send(function(response) {
@@ -36,8 +38,8 @@ describe("Events", function() {
 				eventUploadCheck = true;
 			})
 			.send(function(response) {
-				expect(eventCheck).toBe(true);
-				expect(eventUploadCheck).toBe(false);
+				Should(eventCheck).be.exactly(true);
+				Should(eventUploadCheck).be.exactly(false);
 				done();
 			});
 	});
@@ -55,8 +57,8 @@ describe("Events", function() {
 				eventUploadCheck = true;
 			})
 			.send(function(response) {
-				expect(eventCheck).toBe(true);
-				expect(eventUploadCheck).toBe(true);
+				Should(eventCheck).be.exactly(true);
+				Should(eventUploadCheck).be.exactly(true);
 				done();
 			});
 	});
