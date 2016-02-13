@@ -7,6 +7,7 @@ module.exports = function(grunt) {
       server: {
         options: {
           keepalive: false,
+          hostname: "127.0.0.1",
           port: 9000,
           base: './',
           middleware: function (connect, options, middlewares) {
@@ -44,7 +45,7 @@ module.exports = function(grunt) {
     mocha_phantomjs: {
       all: {
         options: {
-          urls: ['http://localhost:9000/specs/runner.html']
+          urls: ['http://127.0.0.1:9000/specs/runner.html']
         }
       }
     }
