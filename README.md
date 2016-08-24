@@ -1,4 +1,4 @@
-![Travis CI](https://travis-ci.org/jccazeaux/Jacks.svg?branch=master)
+![Travis CI](https://travis-ci.org/jccazeaux/jacks.svg?branch=master)
 
 # Jacks
 Fluent extensible ajax framework.
